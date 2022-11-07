@@ -4,8 +4,8 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
 
-version = '1.19.2-0.0.1.0'
-group = 'dev.tourmi.svmm' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = '1.19.2-0.0.2.0'
+group = 'dev.tourmi.svmm'
 archivesBaseName = 'svmm'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
