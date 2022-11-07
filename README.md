@@ -1,4 +1,4 @@
-# mc-server-side-vein-miner
+# Server-side Vein Miner
 A mod for Minecraft which allows to instantly mine ore veins
 
 ## Features so far
