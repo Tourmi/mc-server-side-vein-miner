@@ -10,8 +10,10 @@ import net.minecraft.world.entity.player.Player;
 public class Commands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> cs = net.minecraft.commands.Commands.literal("svmm")
-                .then(net.minecraft.commands.Commands.literal("help").executes(HelpCommand::execute))
-                .executes(HelpCommand::execute);
+                .then(HelpCommand.getCommand())
+                .then(EnableCommand.getCommand())
+                .then(DisableCommand.getCommand())
+                .executes(HelpCommand::execute); //default when no additional arguments given
 
         dispatcher.register(cs);
     }
