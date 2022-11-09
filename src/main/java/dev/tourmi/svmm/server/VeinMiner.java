@@ -3,6 +3,7 @@ package dev.tourmi.svmm.server;
 import com.mojang.logging.LogUtils;
 import dev.tourmi.svmm.config.ClientConfigs;
 import dev.tourmi.svmm.config.SVMMConfig;
+import dev.tourmi.svmm.utils.MinecraftUtils;
 import dev.tourmi.svmm.utils.Utils3D;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -34,9 +35,7 @@ public class VeinMiner {
         if (player.isCreative()) return false;
         if (player.isShiftKeyDown()) return false;
         if (!heldItem.isCorrectToolForDrops(minedBlockState)) return false;
-
-        String blockName = minedBlockState.toString().substring(6, minedBlockState.toString().length() - 1);
-        if (!SVMMConfig.BLOCK_WHITELIST.get().contains(blockName)) return false;
+        if (!SVMMConfig.BLOCK_WHITELIST.get().contains(MinecraftUtils.getBlockName(minedBlockState))) return false;
 
         return true;
     }
