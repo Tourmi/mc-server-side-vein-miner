@@ -14,8 +14,8 @@ import net.minecraft.world.entity.Entity;
 
 public class ToggleCommand {
     public static LiteralArgumentBuilder<CommandSourceStack> getCommand(boolean disable) {
-        return net.minecraft.commands.Commands.literal(disable ? "disable" : "enable")
-                .then(net.minecraft.commands.Commands.argument("player", EntityArgument.player())
+        return Commands.literal(disable ? "disable" : "enable")
+                .then(Commands.argument("player", EntityArgument.player())
                         .requires(cs -> cs.hasPermission(Commands.LEVEL_MODERATORS))
                         .executes(cs -> ToggleCommand.toggleOther(cs, disable)))
                 .executes(cs -> ToggleCommand.selfToggle(cs, disable));

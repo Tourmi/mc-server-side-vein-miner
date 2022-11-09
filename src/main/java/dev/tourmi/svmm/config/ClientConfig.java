@@ -11,7 +11,7 @@ public class ClientConfig {
     public ClientConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         MOD_DISABLED = builder.comment("Whether or not the player disabled the mod for themselves").define("mod_disabled", false);
-        MOD_RESTRICTED = builder.comment("Whether or not the mod was restricted by an operator").define("mod_restricted", false);
+        MOD_RESTRICTED = builder.comment("Whether or not the mod was restricted by an operator").define("mod_restricted", SVMMConfig.DEFAULT_RESTRICTED.get().booleanValue());
 
         SPEC = builder.build();
     }
