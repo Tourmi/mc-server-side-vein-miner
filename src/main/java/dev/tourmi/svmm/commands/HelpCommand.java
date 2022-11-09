@@ -3,16 +3,18 @@ package dev.tourmi.svmm.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import dev.tourmi.svmm.utils.CommandUtils;
+import net.minecraft.commands.Commands;
 import net.minecraft.commands.CommandSourceStack;
 
 public class HelpCommand {
     public static LiteralArgumentBuilder<CommandSourceStack> getCommand() {
-        return net.minecraft.commands.Commands.literal("help")
+        return Commands.literal("help")
                 .executes(HelpCommand::execute);
     }
 
     public static int execute(CommandContext<CommandSourceStack> commandContext) {
-        Commands.sendMessage(commandContext, getHelpString());
+        CommandUtils.sendMessage(commandContext, getHelpString());
         return Command.SINGLE_SUCCESS;
     }
 

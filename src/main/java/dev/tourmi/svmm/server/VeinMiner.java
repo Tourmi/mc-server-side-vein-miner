@@ -19,40 +19,44 @@ import java.util.Collection;
 public class VeinMiner {
     public void onBlockBroken(BlockEvent.BreakEvent event) {
         if (event.getLevel().isClientSide()) return;
+
         Player player = event.getPlayer();
-        if (ClientConfigs.getClientConfig(player.getUUID()).MOD_DISABLED.get()) return;
+        ItemStack heldItem = player.getMainHandItem();
+        BlockState blockState = event.getState();
+        if (!canVeinMine(player, heldItem, blockState)) return;
 
-        BlockState state = event.getState();
-        if (player.isCreative()) return;
-        if (player.isShiftKeyDown()) return;
+        doVeinMine(player, player.getLevel(), heldItem, blockState, event.getPos());
+    }
 
-        String blockName = state.toString().substring(6, state.toString().length() - 1);
-        if (!SVMMConfig.BLOCK_WHITELIST.get().contains(blockName)) {
-            return;
-        }
+    private boolean canVeinMine(Player player, ItemStack heldItem, BlockState minedBlockState) {
+        if (ClientConfigs.getClientConfig(player.getUUID()).MOD_DISABLED.get()) return false;
+        if (ClientConfigs.getClientConfig(player.getUUID()).MOD_RESTRICTED.get()) return false;
+        if (player.isCreative()) return false;
+        if (player.isShiftKeyDown()) return false;
+        if (!heldItem.isCorrectToolForDrops(minedBlockState)) return false;
 
-        ItemStack currItem = player.getMainHandItem();
-        if (!currItem.isCorrectToolForDrops(state)) {
-            return;
-        }
+        String blockName = minedBlockState.toString().substring(6, minedBlockState.toString().length() - 1);
+        if (!SVMMConfig.BLOCK_WHITELIST.get().contains(blockName)) return false;
 
-        Level level = player.getLevel();
+        return true;
+    }
 
+    private void doVeinMine(Player player, Level level, ItemStack heldItem, BlockState blockState, BlockPos blockPos) {
         boolean letItemBreak = !SVMMConfig.STOP_WHEN_ABOUT_TO_BREAK.get();
 
-        Collection<BlockPos> blocks = Utils3D.getVeinBlocks(state, event.getPos(), level, SVMMConfig.MAXIMUM_BLOCKS_TO_BREAK.get());
+        Collection<BlockPos> blocks = Utils3D.getVeinBlocks(blockState, blockPos, level, SVMMConfig.MAXIMUM_BLOCKS_TO_BREAK.get());
         for (BlockPos pos : blocks) {
-            if (!letItemBreak && currItem.getMaxDamage() - currItem.getDamageValue() <= 2) {
+            if (!letItemBreak && heldItem.getMaxDamage() - heldItem.getDamageValue() <= 2) {
                 break;
             }
-            if (currItem.isEmpty()) {
+            if (heldItem.isEmpty()) {
                 break;
             }
 
             BlockState st = level.getBlockState(pos);
-            currItem.mineBlock(level, st, pos, player);
-            st.getBlock().popExperience((ServerLevel) level, pos, st.getExpDrop(level, level.getRandom(), pos, currItem.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE), currItem.getEnchantmentLevel(Enchantments.SILK_TOUCH)));
-            st.getBlock().playerDestroy(level, player, pos, st, level.getBlockEntity(pos), currItem);
+            heldItem.mineBlock(level, st, pos, player);
+            st.getBlock().popExperience((ServerLevel) level, pos, st.getExpDrop(level, level.getRandom(), pos, heldItem.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE), heldItem.getEnchantmentLevel(Enchantments.SILK_TOUCH)));
+            st.getBlock().playerDestroy(level, player, pos, st, level.getBlockEntity(pos), heldItem);
             level.removeBlock(pos, false);
         }
     }
