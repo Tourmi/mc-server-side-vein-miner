@@ -21,6 +21,7 @@ import java.util.Collection;
 public class VeinMiner {
     public void onBlockBroken(BlockEvent.BreakEvent event) {
         if (event.getLevel().isClientSide()) return;
+        if (SVMMConfig.MOD_DISABLED.get()) return;
 
         Player player = event.getPlayer();
         ItemStack heldItem = player.getMainHandItem();
