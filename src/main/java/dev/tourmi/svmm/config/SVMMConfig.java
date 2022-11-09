@@ -12,6 +12,7 @@ public final class SVMMConfig {
 
     public static final ForgeConfigSpec SPEC;
 
+    public static final ForgeConfigSpec.BooleanValue DEFAULT_RESTRICTED;
     public static final ForgeConfigSpec.IntValue MAXIMUM_BLOCKS_TO_BREAK;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> BLOCK_WHITELIST;
     public static final ForgeConfigSpec.BooleanValue STOP_WHEN_ABOUT_TO_BREAK;
@@ -40,6 +41,7 @@ public final class SVMMConfig {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
         builder.push("Server-side Vein Miner configuration");
+        DEFAULT_RESTRICTED = builder.comment("Whether or not the mod is restricted by default for new users").define("default_restricted", false);
         MAXIMUM_BLOCKS_TO_BREAK = builder.comment("The maximum amount of blocks the mod is allowed to break at once").defineInRange("maximum_blocks_to_break", 100, 1, 10_000);
         BLOCK_WHITELIST = builder.comment("The blocks that are allowed to be vein-mined").defineList("block_white_list", DEFAULT_BLOCK_WHITELIST.get(), String.class::isInstance);
         STOP_WHEN_ABOUT_TO_BREAK = builder.comment("Whether or not to stop the vein mining when the tool is about to break").define("stop_when_about_to_break_tool", true);
