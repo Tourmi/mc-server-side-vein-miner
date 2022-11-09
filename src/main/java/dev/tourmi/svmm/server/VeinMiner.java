@@ -1,6 +1,7 @@
 package dev.tourmi.svmm.server;
 
 import com.mojang.logging.LogUtils;
+import dev.tourmi.svmm.config.ClientConfig;
 import dev.tourmi.svmm.config.ClientConfigs;
 import dev.tourmi.svmm.config.SVMMConfig;
 import dev.tourmi.svmm.utils.MinecraftUtils;
@@ -24,39 +25,48 @@ public class VeinMiner {
         Player player = event.getPlayer();
         ItemStack heldItem = player.getMainHandItem();
         BlockState blockState = event.getState();
-        if (!canVeinMine(player, heldItem, blockState)) return;
+        if (!canUseMod(player, heldItem, blockState)) return;
 
-        doVeinMine(player, player.getLevel(), heldItem, blockState, event.getPos());
+        Level level = player.getLevel();
+        BlockPos blockPos = event.getPos();
+
+        if (canGiantVeinMine(player, blockState)) {
+            doGiantVeinMine(player, level, heldItem, blockPos);
+        }
+        else if (canVeinMine(blockState)) {
+            doVeinMine(player, level, heldItem, blockState, blockPos);
+        }
     }
 
-    private boolean canVeinMine(Player player, ItemStack heldItem, BlockState minedBlockState) {
-        if (ClientConfigs.getClientConfig(player.getUUID()).MOD_DISABLED.get()) return false;
-        if (ClientConfigs.getClientConfig(player.getUUID()).MOD_RESTRICTED.get()) return false;
+    private boolean canUseMod(Player player, ItemStack heldItem, BlockState minedBlockState) {
+        ClientConfig cfg = ClientConfigs.getClientConfig(player.getUUID());
+
+        if (cfg.MOD_DISABLED.get()) return false;
+        if (cfg.MOD_RESTRICTED.get()) return false;
         if (player.isCreative()) return false;
         if (player.isShiftKeyDown()) return false;
-        if (!heldItem.isCorrectToolForDrops(minedBlockState)) return false;
-        if (!SVMMConfig.BLOCK_WHITELIST.get().contains(MinecraftUtils.getBlockName(minedBlockState))) return false;
+        return heldItem.isCorrectToolForDrops(minedBlockState);
+    }
 
-        return true;
+    private boolean canVeinMine(BlockState minedBlockState) {
+        return SVMMConfig.BLOCK_WHITELIST.get().contains(MinecraftUtils.getBlockName(minedBlockState));
     }
 
     private void doVeinMine(Player player, Level level, ItemStack heldItem, BlockState blockState, BlockPos blockPos) {
-        boolean letItemBreak = !SVMMConfig.STOP_WHEN_ABOUT_TO_BREAK.get();
+        MinecraftUtils.mineBlocks(level, player, heldItem, Utils3D.getVeinBlocks(blockState, blockPos, level, SVMMConfig.MAXIMUM_BLOCKS_TO_BREAK.get()));
+    }
 
-        Collection<BlockPos> blocks = Utils3D.getVeinBlocks(blockState, blockPos, level, SVMMConfig.MAXIMUM_BLOCKS_TO_BREAK.get());
-        for (BlockPos pos : blocks) {
-            if (!letItemBreak && heldItem.getMaxDamage() - heldItem.getDamageValue() <= 2) {
-                break;
-            }
-            if (heldItem.isEmpty()) {
-                break;
-            }
+    private boolean canGiantVeinMine(Player player, BlockState minedBlockState) {
+        if (SVMMConfig.GIANT_VEIN_MINING_DISABLED.get()) return false;
 
-            BlockState st = level.getBlockState(pos);
-            heldItem.mineBlock(level, st, pos, player);
-            st.getBlock().popExperience((ServerLevel) level, pos, st.getExpDrop(level, level.getRandom(), pos, heldItem.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE), heldItem.getEnchantmentLevel(Enchantments.SILK_TOUCH)));
-            st.getBlock().playerDestroy(level, player, pos, st, level.getBlockEntity(pos), heldItem);
-            level.removeBlock(pos, false);
-        }
+        ClientConfig cfg = ClientConfigs.getClientConfig(player.getUUID());
+        if (cfg.GIANT_VEIN_MINING_DISABLED.get()) return false;
+        if (cfg.GIANT_VEIN_MINING_RESTRICTED.get()) return false;
+
+        return SVMMConfig.GIANT_VEIN_STARTER_BLOCKS.get().contains(MinecraftUtils.getBlockName(minedBlockState));
+    }
+
+    private void doGiantVeinMine(Player player, Level level, ItemStack heldItem, BlockPos blockPos) {
+        MinecraftUtils.mineBlocks(level, player, heldItem, Utils3D.getGiantVeinBlocks(blockPos, level, SVMMConfig.MAXIMUM_BLOCKS_TO_BREAK.get()));
     }
 }
