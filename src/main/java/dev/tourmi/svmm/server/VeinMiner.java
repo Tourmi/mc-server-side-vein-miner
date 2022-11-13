@@ -67,6 +67,7 @@ public class VeinMiner {
         if (!SVMMConfig.TUNNELING_WHITELIST.get().contains(MinecraftUtils.getBlockName(blockState))) {
             Tunneler.cancelTunnel(player.getUUID());
             player.sendSystemMessage(Component.literal("Cancelled tunneling since the block that was mined is not part of the allowed list of blocks"));
+            return false;
         }
 
         return true;
