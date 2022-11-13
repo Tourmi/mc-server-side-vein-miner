@@ -10,6 +10,7 @@ public class Commands {
                 .then(HelpCommand.getCommand())
                 .then(ToggleCommand.getCommand(true))
                 .then(ToggleCommand.getCommand(false))
+                .then(TunnelCommand.getCommand())
                 .executes(HelpCommand::execute); //default when no additional arguments given
 
         dispatcher.register(cs);

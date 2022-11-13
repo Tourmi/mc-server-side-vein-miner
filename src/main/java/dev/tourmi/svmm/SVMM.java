@@ -4,10 +4,13 @@ import com.mojang.logging.LogUtils;
 import dev.tourmi.svmm.commands.Commands;
 import dev.tourmi.svmm.config.ClientConfigs;
 import dev.tourmi.svmm.config.SVMMConfig;
+import dev.tourmi.svmm.server.Tunneler;
 import dev.tourmi.svmm.server.VeinMiner;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -47,6 +50,13 @@ public class SVMM
     @SubscribeEvent
     public void onBlockBroken(BlockEvent.BreakEvent event) {
         veinMiner.onBlockBroken(event);
+    }
+
+    @SubscribeEvent
+    public void onPlayerMine(PlayerInteractEvent event) {
+        if (event.getSide().isClient()) return;
+
+        Tunneler.updateFaceMined(event.getEntity().getUUID(), event.getFace());
     }
 
     @SubscribeEvent

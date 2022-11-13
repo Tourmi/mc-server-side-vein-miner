@@ -26,6 +26,10 @@ public class ToggleCommand {
                                 .requires(cs -> cs.hasPermission(Commands.LEVEL_MODERATORS))
                                 .executes(cs -> toggleOtherGiantVein(cs, disable))) // /svmm disable|enable giantVein {player}
                         .executes(cs -> selfToggleGiantVein(cs, disable))) // /svmm disable|enable giantVein
+                .then(Commands.literal("tunnel")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .requires(cs -> cs.hasPermission(Commands.LEVEL_MODERATORS))
+                                .executes(cs -> toggleOtherTunneling(cs, disable)))) // /svmm disable|enable tunnel {player}
                 .executes(cs -> ToggleCommand.selfToggle(cs, disable)); // /svmm disable|enable
     }
 
@@ -69,6 +73,18 @@ public class ToggleCommand {
         cfg.SPEC.save();
 
         CommandUtils.sendMessage(commandContext, formatMessage("Giant Vein Miner is now %s for " + player.getName().getString(), disable, "restricted", "allowed"));
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int toggleOtherTunneling(CommandContext<CommandSourceStack> commandContext, boolean disable) throws CommandSyntaxException {
+        Entity player = EntityArgument.getEntity(commandContext, "player");
+
+        ClientConfig cfg = ClientConfigs.getClientConfig(player.getUUID());
+        cfg.TUNNELING_RESTRICTED.set(disable);
+        cfg.SPEC.save();
+
+        CommandUtils.sendMessage(commandContext, formatMessage("Tunneling is now %s for " + player.getName().getString(), disable, "restricted", "allowed"));
 
         return Command.SINGLE_SUCCESS;
     }
