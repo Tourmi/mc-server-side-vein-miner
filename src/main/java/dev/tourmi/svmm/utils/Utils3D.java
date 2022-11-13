@@ -1,7 +1,10 @@
 package dev.tourmi.svmm.utils;
 
 import dev.tourmi.svmm.config.SVMMConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -37,7 +40,6 @@ public class Utils3D {
             newPositions.remove(currPos);
         }
 
-        visitedBlocks.remove(p);
         return visitedBlocks;
     }
 
@@ -58,8 +60,51 @@ public class Utils3D {
             newPositions.remove(currPos);
         }
 
-
-        visitedBlocks.remove(p);
         return visitedBlocks;
+    }
+
+    public static Collection<BlockPos> getTunnelBlocks(BlockPos p, BlockState s, Level l, Direction f, int width, int height, int depth) {
+        return getTunnelBlocks(p, s, l, f, Direction.UP, Direction.DOWN, f.getClockWise(), f.getCounterClockWise(), width, height, depth);
+    }
+
+    private static Collection<BlockPos> getTunnelBlocks(BlockPos p, BlockState s, Level l, Direction blockFace, Direction upDir, Direction downDir, Direction leftDir, Direction rightDir, int width, int height, int depth) {
+        HashSet<BlockPos> blocks = new HashSet<>();
+        int upDist = (height - 1) / 2;
+        int downDist = height / 2;
+        int leftDist = (width - 1) / 2;
+        int rightDist = width / 2;
+        for (int i = 0; i < depth; i++) {
+            BlockPos currDepth = p.relative(blockFace.getOpposite(), i);
+            Stream<BlockPos> stream = BlockPos.betweenClosedStream(
+                    currDepth.relative(leftDir, leftDist).relative(upDir, upDist),
+                    currDepth.relative(rightDir, rightDist).relative(downDir, downDist));
+
+            if (SVMMConfig.TUNNELING_SAME_TYPE.get()) {
+                String blockName = MinecraftUtils.getBlockName(s);
+                stream = stream.filter(pos -> MinecraftUtils.getBlockName(l.getBlockState(pos)).equals(blockName));
+            } else {
+                stream = stream.filter(pos -> SVMMConfig.TUNNELING_WHITELIST.get().contains(MinecraftUtils.getBlockName(l.getBlockState(pos))));
+            }
+
+            List<BlockPos> res = stream.map(BlockPos::immutable).toList();
+            blocks.addAll(res);
+
+            if (res.isEmpty()) break;
+        }
+
+        return blocks;
+
+    }
+
+    public static Collection<BlockPos> getVerticalTunnelBlocks(BlockPos p, BlockState s, Level l, Direction playerDir, Direction f, int width, int height, int depth) {
+        Direction up = playerDir;
+        Direction down = playerDir.getOpposite();
+        Direction left = playerDir.getCounterClockWise();
+        Direction right = playerDir.getClockWise();
+        if (f.getAxisDirection() == Direction.AxisDirection.NEGATIVE) {
+            up = down;
+            down = playerDir;
+        }
+        return getTunnelBlocks(p, s, l, f, up, down, left, right, width, height, depth);
     }
 }

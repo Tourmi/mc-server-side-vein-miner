@@ -10,8 +10,29 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 public class MinecraftUtils {
+    public static Stream<String> getColorNames() {
+        return Stream.of(
+                "white",
+                "orange",
+                "magenta",
+                "light_blue",
+                "yellow",
+                "lime",
+                "pink",
+                "gray",
+                "light_gray",
+                "cyan",
+                "purple",
+                "blue",
+                "brown",
+                "green",
+                "red",
+                "black");
+    }
+
     public static String getBlockName(BlockState bs) {
         String stateString = bs.toString();
         return stateString.substring(stateString.indexOf('{') + 1, stateString.indexOf('}'));
