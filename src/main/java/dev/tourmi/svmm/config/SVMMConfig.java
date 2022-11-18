@@ -108,6 +108,17 @@ public final class SVMMConfig {
             "minecraft:terracotta"
     ), MinecraftUtils.getColorNames().map(color -> "minecraft:" + color + "_terracotta")).toList();
 
+    public static final ForgeConfigSpec.BooleanValue FORCE_DISABLED;
+    public static final ForgeConfigSpec.BooleanValue FORCE_DEFAULT_RESTRICTED;
+    public static final ForgeConfigSpec.BooleanValue FORCE_LOG_USAGE;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> FORCE_BLACKLIST;
+    private static final Supplier<List<String>> DEFAULT_FORCE_VEINMINE_BLACKLIST = () -> List.of(
+            "minecraft:bedrock",
+            "minecraft:reinforced_deepslate",
+            "minecraft:chest",
+            "minecraft:trapped_chest",
+            "minecraft:barrel"
+    );
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -158,6 +169,17 @@ public final class SVMMConfig {
                 .define("tunneling_same_type", false);
         TUNNELING_WHITELIST = builder.comment("The blocks the player is allowed to mine through while tunneling")
                 .defineList("tunneling_whitelist", DEFAULT_TUNNELING_WHITELIST.get(), String.class::isInstance);
+        builder.pop();
+
+        builder.push("/svmm force configuration");
+        FORCE_DISABLED = builder.comment("Whether or not /svmm force is disabled on the server")
+                        .define("force_disabled", false);
+        FORCE_DEFAULT_RESTRICTED = builder.comment("Whether or not /svmm force is restricted by default")
+                        .define("force_default_restricted", true);
+        FORCE_LOG_USAGE = builder.comment("Whether or not to log to console whenever a player uses the force vein mine")
+                .define("force_logging", true);
+        FORCE_BLACKLIST = builder.comment("Blocks that aren't allowed to be force vein mined")
+                        .defineList("force_blacklist", DEFAULT_FORCE_VEINMINE_BLACKLIST.get(), String.class::isInstance);
         builder.pop();
 
         builder.pop();

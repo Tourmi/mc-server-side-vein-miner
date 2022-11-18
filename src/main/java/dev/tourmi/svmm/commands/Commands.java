@@ -11,6 +11,7 @@ public class Commands {
                 .then(ToggleCommand.getCommand(true))
                 .then(ToggleCommand.getCommand(false))
                 .then(TunnelCommand.getCommand())
+                .then(ForceCommand.getCommand())
                 .executes(HelpCommand::execute); //default when no additional arguments given
 
         dispatcher.register(cs);

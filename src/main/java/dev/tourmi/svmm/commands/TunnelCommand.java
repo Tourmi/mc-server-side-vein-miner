@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.tourmi.svmm.config.ClientConfig;
 import dev.tourmi.svmm.config.SVMMConfig;
+import dev.tourmi.svmm.server.ClientStatus;
 import dev.tourmi.svmm.server.Tunneler;
 import dev.tourmi.svmm.utils.CommandUtils;
 import net.minecraft.commands.CommandSourceStack;
@@ -27,7 +28,7 @@ public class TunnelCommand {
     private static int tunnel(CommandContext<CommandSourceStack> cc) {
         if (!checkIsAllowed(cc)) return 0;
 
-        Tunneler.TunnelerStatus status = Tunneler.toggleTunneler(cc.getSource().getEntity().getUUID());
+        ClientStatus status = Tunneler.toggleTunneler(cc.getSource().getEntity().getUUID());
         CommandUtils.sendMessage(cc, status.lastMessage);
 
         return Command.SINGLE_SUCCESS;
@@ -36,7 +37,7 @@ public class TunnelCommand {
     private static int tunnelWidthHeight(CommandContext<CommandSourceStack> cc) {
         if (!checkIsAllowed(cc)) return 0;
 
-        Tunneler.TunnelerStatus status = Tunneler.toggleTunneler(cc.getSource().getEntity().getUUID(),
+        ClientStatus status = Tunneler.toggleTunneler(cc.getSource().getEntity().getUUID(),
                 cc.getArgument("width", Integer.class),
                 cc.getArgument("height", Integer.class));
         CommandUtils.sendMessage(cc, status.lastMessage);
@@ -47,7 +48,7 @@ public class TunnelCommand {
     private static int tunnelWidthHeightMaxDepth(CommandContext<CommandSourceStack> cc) {
         if (!checkIsAllowed(cc)) return 0;
 
-        Tunneler.TunnelerStatus status = Tunneler.toggleTunneler(cc.getSource().getEntity().getUUID(),
+        ClientStatus status = Tunneler.toggleTunneler(cc.getSource().getEntity().getUUID(),
                 cc.getArgument("width", Integer.class),
                 cc.getArgument("height", Integer.class),
                 cc.getArgument("maxDepth", Integer.class));

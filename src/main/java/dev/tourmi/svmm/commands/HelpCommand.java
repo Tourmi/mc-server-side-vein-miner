@@ -45,13 +45,14 @@ public class HelpCommand {
                     disables the mod or specific features for yourself
                 - /svmm enable [giantVein]
                     enables the mod or specific features for yourself
-                - /svmm disable {player} [giantVein|tunnel]
+                - /svmm disable {player} [giantVein|tunnel|force]
                     restricts the mod or specific features to be used by the specified player
-                - /svmm enable {player} [giantVein|tunnel]
+                - /svmm enable {player} [giantVein|tunnel|force]
                     allows the mod or specific features to be used by the specified player
                 - /svmm tunnel
                     run /svmm help tunnel for more details about this command
-                """ :
+                - /svmm force
+                    Forces a vein mine on the next block mined""" :
                 """
                 SVMM allows you to mine veins of ore instantly. Hold down shift if you do not wish to trigger the mod
                 - /svmm help
@@ -61,6 +62,8 @@ public class HelpCommand {
                 - /svmm enable [giantVein]
                     enables the mod or specific features for yourself
                 - /svmm tunnel
-                    run /svmm help tunnel for more details about this command""";
+                    run /svmm help tunnel for more details about this command
+                - /svmm force
+                    Forces a vein mine on the next block mined""";
     }
 }
