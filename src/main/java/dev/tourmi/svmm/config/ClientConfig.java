@@ -13,6 +13,8 @@ public class ClientConfig {
 
     public final ForgeConfigSpec.BooleanValue TUNNELING_RESTRICTED;
 
+    public final ForgeConfigSpec.BooleanValue FORCE_RESTRICTED;
+
     public ClientConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
@@ -26,6 +28,8 @@ public class ClientConfig {
                 .define("giant_vein_mining_restricted", SVMMConfig.GIANT_VEIN_MINING_DEFAULT_RESTRICTED.get().booleanValue());
         TUNNELING_RESTRICTED = builder.comment("Whether or not tunneling was restricted by an operator")
                 .define("tunneling_restricted", SVMMConfig.TUNNELING_DEFAULT_RESTRICTED.get().booleanValue());
+        FORCE_RESTRICTED = builder.comment("Whether or not /svmm force was restricted by an operator")
+                .define("force_restricted", SVMMConfig.FORCE_DEFAULT_RESTRICTED.get().booleanValue());
 
         SPEC = builder.build();
     }

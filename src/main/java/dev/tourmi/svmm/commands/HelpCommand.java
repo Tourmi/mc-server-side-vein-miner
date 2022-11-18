@@ -30,7 +30,9 @@ public class HelpCommand {
                 - /svmm tunnel {width} {height} {maxDepth}
                     The tunnel will have the specified dimensions, and will have the maximum depth specified
                 - /svmm tunnel
-                    Will reuse the previously specified dimensions for tunneling."""
+                    Will reuse the previously specified dimensions for tunneling.
+                - /svmm force
+                    Forces a vein mine on the next block mined"""
         );
         return Command.SINGLE_SUCCESS;
     }
