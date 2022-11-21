@@ -9,13 +9,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 public class CommandUtils {
+    public static boolean isModerator(CommandSourceStack cs) {
+        return !cs.isPlayer() || cs.hasPermission(Commands.LEVEL_MODERATORS);
+    }
+
     public static boolean isModerator(CommandContext<CommandSourceStack> cc) {
-        return cc.getSource().hasPermission(Commands.LEVEL_MODERATORS);
+        return isModerator(cc.getSource());
     }
 
     public static void sendMessage(CommandContext<CommandSourceStack> commandContext, String message) {
-        if (commandContext.getSource().getEntity() instanceof Player) {
-            Player player = (Player) commandContext.getSource().getEntity();
+        if (commandContext.getSource().getEntity() instanceof Player player) {
             player.sendSystemMessage(Component.literal(message));
         } else {
             commandContext.getSource().getServer().sendSystemMessage(Component.literal(message));
@@ -26,7 +29,11 @@ public class CommandUtils {
         return commandContext.getSource().getEntity() instanceof Player;
     }
 
+    public static ClientConfig getSourceConfig(CommandSourceStack cs) {
+        return ClientConfigs.getClientConfig(cs.getPlayer().getUUID());
+    }
+
     public static ClientConfig getSourceConfig(CommandContext<CommandSourceStack> commandContext) {
-        return ClientConfigs.getClientConfig(commandContext.getSource().getPlayer().getUUID());
+        return getSourceConfig(commandContext.getSource());
     }
 }
