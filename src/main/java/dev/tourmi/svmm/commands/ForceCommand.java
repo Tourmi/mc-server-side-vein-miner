@@ -11,15 +11,15 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-import java.awt.*;
-
-public class ForceCommand {
-    public static LiteralArgumentBuilder<CommandSourceStack> getCommand() {
+public class ForceCommand implements ICommand {
+    public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return net.minecraft.commands.Commands.literal("force")
-                .executes(ForceCommand::execute); // /svmm force
+                .requires(cs -> !SVMMConfig.FORCE_DISABLED.get())
+                .requires(cs -> CommandUtils.isModerator(cs) || !CommandUtils.getSourceConfig(cs).FORCE_RESTRICTED.get())
+                .executes(this::defaultExecute); // /svmm force
     }
 
-    public static int execute(CommandContext<CommandSourceStack> cc) {
+    public int defaultExecute(CommandContext<CommandSourceStack> cc) {
         if (!checkIsAllowed(cc)) return 0;
         Player player = cc.getSource().getPlayer();
         ClientStatus status = ClientStatus.getClientStatus(player.getUUID());
@@ -29,7 +29,19 @@ public class ForceCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static boolean checkIsAllowed(CommandContext<CommandSourceStack> cc) {
+    public String getHelpText(CommandContext<CommandSourceStack> cc) {
+        ClientConfig cfg = CommandUtils.getSourceConfig(cc);
+        if (!CommandUtils.isModerator(cc) && (cfg.MOD_DISABLED.get() || cfg.FORCE_RESTRICTED.get())) {
+            return "";
+        }
+
+        return """
+                - /svmm force
+                    Forces a vein mine on the next block mined
+                """;
+    }
+
+    private boolean checkIsAllowed(CommandContext<CommandSourceStack> cc) {
         if (!cc.getSource().isPlayer())  {
             CommandUtils.sendMessage(cc, "Only players may use this command");
             return false;
