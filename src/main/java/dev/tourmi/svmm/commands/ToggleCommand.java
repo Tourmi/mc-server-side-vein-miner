@@ -26,9 +26,10 @@ public class ToggleCommand implements ICommand {
         this.disable = disable;
 
         moderatorHelpText = String.format("""
-                - /svmm %s {player} [giantVein|tunnel|force]
+                - /svmm %s {player}
+                - /svmm %s [giantVein|tunnel|force] {player}
                     %s the mod or specific features to be used by the specified player
-                """, disable ? "disable" : "enable", disable ? "restricts" : "allows");
+                """, disable ? "disable" : "enable",disable ? "disable" : "enable", disable ? "restricts" : "allows");
         regularHelpText = String.format("""
                 - /svmm %s [giantVein]
                     %s the mod or specific features for yourself
@@ -54,6 +55,12 @@ public class ToggleCommand implements ICommand {
                         .then(Commands.argument("player", EntityArgument.player())
                                 .requires(CommandUtils::isModerator)
                                 .executes(this::toggleOtherTunneling))) // /svmm disable|enable tunnel {player}
+                .then(Commands.literal("force")
+                        .requires(cs -> !SVMMConfig.FORCE_DISABLED.get())
+                        .requires(cs -> CommandUtils.isModerator(cs) || !CommandUtils.getSourceConfig(cs).FORCE_RESTRICTED.get())
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .requires(CommandUtils::isModerator)
+                                .executes(this::toggleOtherForce))) // /svmm disable|enable force {player}
                 .executes(this::selfToggle); // /svmm disable|enable
     }
 
@@ -121,6 +128,18 @@ public class ToggleCommand implements ICommand {
         cfg.SPEC.save();
 
         CommandUtils.sendMessage(commandContext, formatMessage("Tunneling is now %s for " + player.getName().getString(), disable, "restricted", "allowed"));
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int toggleOtherForce(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
+        Entity player = EntityArgument.getEntity(commandContext, "player");
+
+        ClientConfig cfg = ClientConfigs.getClientConfig(player.getUUID());
+        cfg.FORCE_RESTRICTED.set(disable);
+        cfg.SPEC.save();
+
+        CommandUtils.sendMessage(commandContext, formatMessage("Force is now %s for " + player.getName().getString(), disable, "restricted", "allowed"));
 
         return Command.SINGLE_SUCCESS;
     }
