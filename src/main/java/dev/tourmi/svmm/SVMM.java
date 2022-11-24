@@ -4,20 +4,26 @@ import com.mojang.logging.LogUtils;
 import dev.tourmi.svmm.commands.Commands;
 import dev.tourmi.svmm.config.ClientConfigs;
 import dev.tourmi.svmm.config.SVMMConfig;
+import dev.tourmi.svmm.server.ItemTeleporter;
 import dev.tourmi.svmm.server.Tunneler;
 import dev.tourmi.svmm.server.VeinMiner;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.config.ModConfig;
+import org.apache.logging.log4j.core.net.Priority;
 import org.slf4j.Logger;
+
+import java.awt.event.ItemEvent;
 
 @Mod(SVMM.MODID)
 public class SVMM
@@ -62,5 +68,10 @@ public class SVMM
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         ClientConfigs.getClientConfig(event.getEntity().getUUID());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onItemSpawn(EntityEvent.EntityConstructing event) {
+        ItemTeleporter.checkAndTeleport(event.getEntity());
     }
 }

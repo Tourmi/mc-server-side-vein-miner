@@ -39,6 +39,7 @@ public final class SVMMConfig {
             "minecraft:deepslate_redstone_ore"
     );
     public static final ForgeConfigSpec.BooleanValue STOP_WHEN_ABOUT_TO_BREAK;
+    public static final ForgeConfigSpec.BooleanValue TELEPORT_ITEMS_TO_PLAYER;
 
     public static final ForgeConfigSpec.BooleanValue GIANT_VEIN_MINING_DISABLED;
     public static final ForgeConfigSpec.BooleanValue GIANT_VEIN_MINING_DEFAULT_DISABLED;
@@ -136,6 +137,8 @@ public final class SVMMConfig {
                 .defineList("block_white_list", DEFAULT_BLOCK_WHITELIST.get(), String.class::isInstance);
         STOP_WHEN_ABOUT_TO_BREAK = builder.comment("Whether or not to stop the vein mining when the tool is about to break")
                 .define("stop_when_about_to_break_tool", true);
+        TELEPORT_ITEMS_TO_PLAYER = builder.comment("Whether or not to teleport the mined items to the player")
+                .define("teleport_items_to_player", true);
 
         builder.push("Giant vein mining configuration");
         GIANT_VEIN_MINING_DISABLED = builder.comment("Whether or not giant vein mining is disabled on the server")
