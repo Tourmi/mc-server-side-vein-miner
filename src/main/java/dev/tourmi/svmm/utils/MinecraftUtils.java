@@ -39,6 +39,9 @@ public class MinecraftUtils {
 
     public static String getBlockName(BlockState bs) {
         String stateString = bs.toString();
+        if (!stateString.contains("{") || !stateString.contains("}")) {
+            return stateString;
+        }
         return stateString.substring(stateString.indexOf('{') + 1, stateString.indexOf('}'));
     }
 
