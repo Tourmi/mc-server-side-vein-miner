@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.tourmi.svmm.config.ClientConfig;
-import dev.tourmi.svmm.config.ClientConfigs;
 import dev.tourmi.svmm.config.SVMMConfig;
 import dev.tourmi.svmm.server.ClientStatus;
 import dev.tourmi.svmm.server.Tunneler;
@@ -14,6 +13,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
 public class TunnelCommand implements ICommand {
+    @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand(){
         return Commands.literal("tunnel")
                 .requires(cs -> !SVMMConfig.TUNNELING_DISABLED.get())
@@ -28,10 +28,12 @@ public class TunnelCommand implements ICommand {
                 .executes(this::tunnel); // /svmm tunnel
     }
 
+    @Override
     public int defaultExecute(CommandContext<CommandSourceStack> cc) {
         return tunnel(cc);
     }
 
+    @Override
     public String getHelpText(CommandContext<CommandSourceStack> cc) {
         ClientConfig cfg = CommandUtils.getSourceConfig(cc);
         if (!CommandUtils.isModerator(cc) && (cfg.MOD_RESTRICTED.get() || cfg.MOD_DISABLED.get() || cfg.TUNNELING_RESTRICTED.get())) {
