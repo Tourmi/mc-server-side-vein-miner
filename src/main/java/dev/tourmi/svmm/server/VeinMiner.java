@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.level.BlockEvent;
 import org.slf4j.Logger;
 
+import java.util.List;
+
 
 public class VeinMiner {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -64,7 +66,7 @@ public class VeinMiner {
 
         if (!Tunneler.canTunnel(player.getUUID())) return false;
 
-        if (!SVMMConfig.TUNNELING_WHITELIST.get().contains(MinecraftUtils.getBlockName(blockState))) {
+        if (!canMine(blockState, SVMMConfig.TUNNELING_WHITELIST.get(), SVMMConfig.TUNNELING_BLACKLIST.get())) {
             Tunneler.cancelTunnel(player.getUUID());
             player.sendSystemMessage(Component.literal("Cancelled tunneling since the block that was mined is not part of the allowed list of blocks"));
             return false;
@@ -84,14 +86,23 @@ public class VeinMiner {
     private boolean canVeinMine(BlockState minedBlockState, Player player) {
         ClientStatus status = ClientStatus.getClientStatus(player.getUUID());
         if (status.forceNext) {
-            boolean res = !SVMMConfig.FORCE_BLACKLIST.get().contains(MinecraftUtils.getBlockName(minedBlockState));
-            if (!res) {
+            boolean canForceMine = !MinecraftUtils.isBlockInList(minedBlockState, SVMMConfig.FORCE_BLACKLIST.get());
+            if (!canForceMine) {
                 player.sendSystemMessage(Component.literal("You may not force vein mine this block"));
                 status.forceNext = false;
             }
-            return res;
+            return canForceMine;
         }
-        return SVMMConfig.BLOCK_WHITELIST.get().contains(MinecraftUtils.getBlockName(minedBlockState));
+
+        return canMine(minedBlockState, SVMMConfig.BLOCK_WHITELIST.get(), SVMMConfig.BLOCK_BLACKLIST.get());
+    }
+
+    private boolean canMine(BlockState blockState, List<? extends String> whitelist, List<? extends String> blacklist) {
+        if (MinecraftUtils.isBlockInList(blockState, whitelist)) {
+            return !MinecraftUtils.isBlockInList(blockState, blacklist);
+        }
+
+        return false;
     }
 
     private void doVeinMine(Player player, Level level, ItemStack heldItem, BlockState blockState, BlockPos blockPos) {
@@ -116,7 +127,7 @@ public class VeinMiner {
 
         if (ClientStatus.getClientStatus(player.getUUID()).forceNext) return false;
 
-        return SVMMConfig.GIANT_VEIN_STARTER_BLOCKS.get().contains(MinecraftUtils.getBlockName(minedBlockState));
+        return canMine(minedBlockState, SVMMConfig.GIANT_VEIN_STARTER_BLOCKS.get(), SVMMConfig.GIANT_VEIN_BLACKLIST.get());
     }
 
     private void doGiantVeinMine(Player player, Level level, ItemStack heldItem, BlockPos blockPos) {

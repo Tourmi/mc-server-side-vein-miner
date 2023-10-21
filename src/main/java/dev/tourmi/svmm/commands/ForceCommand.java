@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 public class ForceCommand implements ICommand {
+    @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return net.minecraft.commands.Commands.literal("force")
                 .requires(cs -> !SVMMConfig.FORCE_DISABLED.get())
@@ -19,6 +20,7 @@ public class ForceCommand implements ICommand {
                 .executes(this::defaultExecute); // /svmm force
     }
 
+    @Override
     public int defaultExecute(CommandContext<CommandSourceStack> cc) {
         if (!checkIsAllowed(cc)) return 0;
         Player player = cc.getSource().getPlayer();
@@ -29,6 +31,7 @@ public class ForceCommand implements ICommand {
         return Command.SINGLE_SUCCESS;
     }
 
+    @Override
     public String getHelpText(CommandContext<CommandSourceStack> cc) {
         ClientConfig cfg = CommandUtils.getSourceConfig(cc);
         if (!CommandUtils.isModerator(cc) && (cfg.MOD_DISABLED.get() || cfg.FORCE_RESTRICTED.get())) {

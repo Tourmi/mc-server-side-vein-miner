@@ -17,6 +17,7 @@ public class HelpCommand implements ICommand {
         this.commands = commands;
     }
 
+    @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return Commands.literal("help")
                 .then(Commands.literal("tunnel")
@@ -26,11 +27,13 @@ public class HelpCommand implements ICommand {
                 .executes(this::defaultExecute); // /svmm help
     }
 
+    @Override
     public int defaultExecute(CommandContext<CommandSourceStack> commandContext) {
         CommandUtils.sendMessage(commandContext, getHelpMessage(commandContext));
         return Command.SINGLE_SUCCESS;
     }
 
+    @Override
     public String getHelpText(CommandContext<CommandSourceStack> cc) {
         return """
                 - /svmm help
