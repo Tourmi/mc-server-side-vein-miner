@@ -1,10 +1,8 @@
 package dev.tourmi.svmm.utils;
 
 import dev.tourmi.svmm.config.SVMMConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -17,9 +15,12 @@ public class Utils3D {
                 .filter(bpos -> !bpos.equals(pos) && MinecraftUtils.getBlockName(level.getBlockState(bpos)).equals(blockName));
     }
 
-    public static Stream<BlockPos> getGiantVeinBlocksConnectedToPos(BlockPos pos, Level level, List<? extends String> whitelist) {
+    public static Stream<BlockPos> getGiantVeinBlocksConnectedToPos(BlockPos pos, Level level, List<? extends String> whitelist, List<? extends String> blacklist) {
         return BlockPos.betweenClosedStream(pos.offset(-1, -1, -1), pos.offset(1, 1, 1))
-                .filter(bpos -> !bpos.equals(pos) && whitelist.contains(MinecraftUtils.getBlockName(level.getBlockState(bpos))));
+                .filter(bpos ->
+                        !bpos.equals(pos)
+                        && MinecraftUtils.isBlockInList(level.getBlockState(bpos), whitelist)
+                        && !MinecraftUtils.isBlockInList(level.getBlockState(bpos), blacklist));
     }
 
     public static Collection<BlockPos> getVeinBlocks(BlockState s, BlockPos p, Level l, int limit) {
@@ -52,7 +53,7 @@ public class Utils3D {
             BlockPos currPos = newPositions.iterator().next();
 
             if (visitedBlocks.size() + newPositions.size() < limit) {
-                Stream<BlockPos> potentialBlocks = getGiantVeinBlocksConnectedToPos(currPos, l, SVMMConfig.GIANT_VEIN_WHITELIST.get());
+                Stream<BlockPos> potentialBlocks = getGiantVeinBlocksConnectedToPos(currPos, l, SVMMConfig.GIANT_VEIN_WHITELIST.get(), SVMMConfig.GIANT_VEIN_BLACKLIST.get());
                 newPositions.addAll(potentialBlocks.filter(pos -> !visitedBlocks.contains(pos)).map(BlockPos::immutable).toList());
             }
 
@@ -83,7 +84,9 @@ public class Utils3D {
                 String blockName = MinecraftUtils.getBlockName(s);
                 stream = stream.filter(pos -> MinecraftUtils.getBlockName(l.getBlockState(pos)).equals(blockName));
             } else {
-                stream = stream.filter(pos -> SVMMConfig.TUNNELING_WHITELIST.get().contains(MinecraftUtils.getBlockName(l.getBlockState(pos))));
+                stream = stream.filter(pos ->
+                        MinecraftUtils.isBlockInList(l.getBlockState(pos), SVMMConfig.TUNNELING_WHITELIST.get())
+                        && !MinecraftUtils.isBlockInList(l.getBlockState(pos), SVMMConfig.TUNNELING_BLACKLIST.get()));
             }
 
             List<BlockPos> res = stream.map(BlockPos::immutable).toList();

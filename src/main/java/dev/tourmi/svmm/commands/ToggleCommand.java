@@ -36,6 +36,7 @@ public class ToggleCommand implements ICommand {
                 """, disable ? "disable" : "enable", disable ? "disables" : "enables");
     }
 
+    @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return Commands.literal(disable ? "disable" : "enable")
                 .requires(cs -> CommandUtils.isModerator(cs) || !CommandUtils.getSourceConfig(cs).MOD_RESTRICTED.get())
@@ -64,10 +65,12 @@ public class ToggleCommand implements ICommand {
                 .executes(this::selfToggle); // /svmm disable|enable
     }
 
+    @Override
     public int defaultExecute(CommandContext<CommandSourceStack> commandContext) {
         return selfToggle(commandContext);
     }
 
+    @Override
     public String getHelpText(CommandContext<CommandSourceStack> cc) {
         if (CommandUtils.getSourceConfig(cc).MOD_RESTRICTED.get() && !CommandUtils.isModerator(cc)) {
             return "";

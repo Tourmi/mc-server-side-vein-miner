@@ -2,6 +2,7 @@ package dev.tourmi.svmm.utils;
 
 import dev.tourmi.svmm.config.SVMMConfig;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -9,9 +10,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class MinecraftUtils {
@@ -40,6 +43,17 @@ public class MinecraftUtils {
     public static String getBlockName(BlockState bs) {
         String stateString = bs.toString();
         return stateString.substring(stateString.indexOf('{') + 1, stateString.indexOf('}'));
+    }
+
+    public static boolean isBlockInList(BlockState bs, List<? extends String> list) {
+        if (list.contains(MinecraftUtils.getBlockName(bs))) {
+            return true;
+        }
+        var tags = list.stream().filter((e) -> e.startsWith("#")).map(e -> e.substring(1)).toList();
+        return tags
+                .stream()
+                .map((t) -> ForgeRegistries.BLOCKS.tags().createTagKey(new ResourceLocation(t)))
+                .anyMatch(bs::is);
     }
 
     public static void mineBlock(Level level, Player player, BlockPos pos, ItemStack heldItem) {

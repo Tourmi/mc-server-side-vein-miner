@@ -15,6 +15,7 @@ public class Commands {
         add(new ToggleCommand(false));
         add(new ForceCommand());
         add(new TunnelCommand());
+        add(new ConfigCommand());
 
         add(new HelpCommand(this));
     }};
