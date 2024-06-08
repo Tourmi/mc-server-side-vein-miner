@@ -84,7 +84,7 @@ public class ConfigCommand implements ICommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int executeConfigList(CommandContext<CommandSourceStack> cc, ConfigKeys key) {
+    private int executeConfigList(CommandContext<CommandSourceStack> cc, ConfigListKeys key) {
         CommandUtils.sendMessage(cc, "Values in " + key + ":\n" + String.join(", ", key.config.get()));
 
         return Command.SINGLE_SUCCESS;
