@@ -102,7 +102,7 @@ public class ConfigCommand implements ICommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int executeRemove(CommandContext<CommandSourceStack> cc, ConfigKeys key) {
+    private int executeRemove(CommandContext<CommandSourceStack> cc, ConfigListKeys key) {
         var newList = new ArrayList<>(key.config.get().stream().map(String::toString).toList());
         var value = cc.getArgument("value", String.class);
         newList.remove(value);
