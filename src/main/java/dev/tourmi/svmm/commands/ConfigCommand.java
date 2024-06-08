@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ConfigCommand implements ICommand {
-    private enum ConfigKeys {
+    private enum ConfigListKeys {
         block_white_list(SVMMConfig.BLOCK_WHITELIST),
         block_black_list(SVMMConfig.BLOCK_BLACKLIST),
         giant_vein_starter_ore(SVMMConfig.GIANT_VEIN_STARTER_BLOCKS),
