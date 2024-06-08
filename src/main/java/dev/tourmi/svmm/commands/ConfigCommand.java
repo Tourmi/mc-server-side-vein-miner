@@ -38,7 +38,7 @@ public class ConfigCommand implements ICommand {
         var list = Commands.literal("list")
                 .executes(this::executeList);
 
-        for (var key : ConfigKeys.values()) {
+        for (var key : ConfigListKeys.values()) {
             list.then(Commands.literal(key.toString())
                     .then(Commands.literal("add")
                             .then(Commands.argument("value", StringArgumentType.string())
