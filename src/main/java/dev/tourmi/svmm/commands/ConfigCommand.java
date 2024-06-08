@@ -80,7 +80,7 @@ public class ConfigCommand implements ICommand {
 
     private int executeList(CommandContext<CommandSourceStack> cc) {
         CommandUtils.sendMessage(cc, "Available configuration keys");
-        CommandUtils.sendMessage(cc, Arrays.stream(ConfigKeys.values()).map(Enum::name).collect(Collectors.joining(", ")));
+        CommandUtils.sendMessage(cc, Arrays.stream(ConfigListKeys.values()).map(Enum::name).collect(Collectors.joining(", ")));
         return Command.SINGLE_SUCCESS;
     }
 
