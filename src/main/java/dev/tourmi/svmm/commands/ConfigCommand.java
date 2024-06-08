@@ -90,7 +90,7 @@ public class ConfigCommand implements ICommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int executeAdd(CommandContext<CommandSourceStack> cc, ConfigKeys key) {
+    private int executeAdd(CommandContext<CommandSourceStack> cc, ConfigListKeys key) {
         var newList = new ArrayList<>(key.config.get().stream().map(String::toString).toList());
         var value = cc.getArgument("value", String.class);
         newList.add(value);
