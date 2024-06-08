@@ -28,7 +28,7 @@ public class ConfigCommand implements ICommand {
 
         final ForgeConfigSpec.ConfigValue<List<? extends String>> config;
 
-        ConfigKeys(ForgeConfigSpec.ConfigValue<List<? extends String>> config) {
+        ConfigListKeys(ForgeConfigSpec.ConfigValue<List<? extends String>> config) {
             this.config = config;
         }
     }
