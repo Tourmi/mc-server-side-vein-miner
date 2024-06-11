@@ -16,4 +16,4 @@ jobs:
     with:
       minecraft-version: ${{matrix.minecraft-version}}
       svmm-version: ${{inputs.svmm-version}}
-      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      token-github: ${{secrets.GITHUB_TOKEN}}
