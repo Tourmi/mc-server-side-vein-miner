@@ -19,16 +19,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      name: Checking out release/${{minecraft-version}}
+      name: Checking out release/${{ inputs.minecraft-version }}
       with:
-        ref: release/${{minecraft-version}}
+        ref: release/${{ inputs.minecraft-version }}
 
     - uses: mingjun97/file-regex-replace@v1
       name: Update version number
       with:
         regex: ^version = (.*)$
         flags: gm
-        replacement: "$1'${{minecraft-version}}-${{svmm-version}}'"
+        replacement: "$1'${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}'"
         include: build.gradle
     
     - name: Set up JDK 17
@@ -45,11 +45,11 @@ jobs:
         chmod +x gradlew
         ./gradlew build
 
-    - name: Commit new version to branch release/${{minecraft-version}}
+    - name: Commit new version to branch release/${{ inputs.minecraft-version }}
       run: |
-        git config --global user.name '${{vars.BUILD_ACTOR_NAME}}'
-        git config --global user.email '${{vars.BUILD_ACTOR_EMAIL}}'
-        git commit -am "Bump version to ${{minecraft-version}}-${{svmm-version}}"
+        git config --global user.name '${{ vars.BUILD_ACTOR_NAME }}'
+        git config --global user.email '${{ vars.BUILD_ACTOR_EMAIL }}'
+        git commit -am "Bump version to ${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}"
         git push
   
     - name: Create release
@@ -58,6 +58,6 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
         files: 'build/libs/*.jar'
-        automatic_release_tag: ${{minecraft-version}}/${{svmm-version}}
-        title: ${{minecraft-version}}.${{svmm-version}}
+        automatic_release_tag: ${{ inputs.minecraft-version }}/${{ inputs.svmm-version }}
+        title: ${{ inputs.minecraft-version }}.${{ inputs.svmm-version }}
         
