@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[47,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+loaderVersion="[43,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 license="GPL 3.0"
 issueTrackerURL="https://github.com/Tourmi/mc-server-side-vein-miner/issues/" #optional
 [[mods]] #mandatory
@@ -22,12 +22,12 @@ Server-side Vein Miner. Allows one to instantly mine ore veins on a server, with
 [[dependencies.svmm]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[47,)" #mandatory
+    versionRange="[43,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.svmm]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.20.1,1.21)"
+    versionRange="[1.19.2,1.20)"
     ordering="NONE"
     side="SERVER"
