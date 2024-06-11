@@ -58,6 +58,6 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
         files: 'build/libs/*.jar'
-        automatic_release_tag: ${{ inputs.minecraft-version }}/${{ inputs.svmm-version }}
-        title: ${{ inputs.minecraft-version }}.${{ inputs.svmm-version }}
+        automatic_release_tag: ${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}
+        title: ${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}
         
