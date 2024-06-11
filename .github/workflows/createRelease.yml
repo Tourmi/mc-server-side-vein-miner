@@ -1,0 +1,19 @@
+name: Create release
+
+on:
+  workflow_dispatch:
+    inputs:
+      svmm-version:
+        required: true
+        type: string
+
+jobs:
+  release:
+    strategy:
+      matrix:
+        minecraft-version: [1.19.2, 1.20.1]
+    uses: ./.github/workflows/createReleaseForMinecraftVersion.yml
+    with:
+      minecraft-version: ${{matrix.minecraft-version}}
+      svmm-version: ${{inputs.svmm-version}}
+      token-github: ${{secrets.GITHUB_TOKEN}}

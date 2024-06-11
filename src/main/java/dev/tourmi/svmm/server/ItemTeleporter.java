@@ -12,7 +12,7 @@ public class ItemTeleporter {
     public static void checkAndTeleport(Entity entity) {
         if (!SVMMConfig.TELEPORT_ITEMS_TO_PLAYER.get()) return;
         if (!(entity instanceof ItemEntity item)) return;
-        Level l = entity.getLevel();
+        Level l = entity.getCommandSenderWorld();
         if (l.isClientSide) return;
         l.getServer().execute(() -> {
             if (!item.isAlive()) return;

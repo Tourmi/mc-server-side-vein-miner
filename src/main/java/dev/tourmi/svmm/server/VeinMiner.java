@@ -30,7 +30,7 @@ public class VeinMiner {
         BlockState blockState = event.getState();
         if (!canUseMod(player, heldItem, blockState)) return;
 
-        Level level = player.getLevel();
+        Level level = player.getCommandSenderWorld();
         BlockPos blockPos = event.getPos();
 
         if (canTunnel(player, blockState)) {

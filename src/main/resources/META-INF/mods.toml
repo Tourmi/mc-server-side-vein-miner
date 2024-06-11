@@ -1,6 +1,7 @@
 modLoader="javafml" #mandatory
 loaderVersion="[43,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 license="GPL 3.0"
+issueTrackerURL="https://github.com/Tourmi/mc-server-side-vein-miner/issues/" #optional
 [[mods]] #mandatory
 modId="svmm" #mandatory
 version="${global.mcVersion}-${file.jarVersion}" #mandatory
