@@ -64,4 +64,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.token-github }}
         TAG: ${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}
       run: |
-        gh release create "$TAG" './build/libs/*.jar' --generate-notes --title "${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}"
+        gh release create "$TAG" "./build/libs/svmm-$TAG.jar" --generate-notes --title "$TAG"
