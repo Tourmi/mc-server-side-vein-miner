@@ -26,7 +26,7 @@ jobs:
     - uses: mingjun97/file-regex-replace@v1
       name: Update version number
       with:
-        regex: ^version = (.*)$
+        regex: ^(version = )(.*)$
         flags: gm
         replacement: "$1'${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}'"
         include: build.gradle
