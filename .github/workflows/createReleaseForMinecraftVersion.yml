@@ -27,7 +27,7 @@ jobs:
       with:
         ref: release/${{ inputs.minecraft-version }}
 
-    - uses: Reedyuk/write-properties@1.0.3
+    - uses: Reedyuk/write-properties@v1.0.3
       name: Update version number
       with:
         path: './gradle.properties'
