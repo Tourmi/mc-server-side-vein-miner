@@ -16,7 +16,9 @@ jobs:
     with:
       minecraft-version: ${{matrix.minecraft-version}}
       mod-version: ${{inputs.mod-version}}
-      token-github: ${{secrets.GITHUB_TOKEN}}
+    secrets:
+      token-github: ${{ secrets.GITHUB_TOKEN }}
+
   bump-main-version:
     runs-on: ubuntu-latest
     permissions:

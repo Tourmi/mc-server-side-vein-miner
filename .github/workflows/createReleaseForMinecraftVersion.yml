@@ -13,7 +13,6 @@ on:
       token-github:
         required: true
 
-
 jobs:
   release:
     name: release ${{inputs.mod-version}} on Minecraft ${{inputs.minecraft-version}}
@@ -63,4 +62,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.token-github }}
         TAG: ${{ inputs.minecraft-version }}-${{ inputs.mod-version }}
       run: |
-        gh release create "$TAG" 'build/libs/*.jar' --generate-notes --title "${{ inputs.minecraft-version }}-${{ inputs.mod-version }}"
+        gh release create "$TAG" "./build/libs/svmm-$TAG.jar" --generate-notes --title "$TAG"
