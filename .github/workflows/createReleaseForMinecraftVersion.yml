@@ -6,7 +6,7 @@ on:
       minecraft-version:
         required: true
         type: string
-      svmm-version:
+      mod-version:
         required: true
         type: string
     secrets:
@@ -16,7 +16,7 @@ on:
 
 jobs:
   release:
-    name: release ${{inputs.svmm-version}} on Minecraft ${{inputs.minecraft-version}}
+    name: release ${{inputs.mod-version}} on Minecraft ${{inputs.minecraft-version}}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -28,13 +28,12 @@ jobs:
       with:
         ref: release/${{ inputs.minecraft-version }}
 
-    - uses: mingjun97/file-regex-replace@v1
+    - uses: christian-draeger/write-properties@1.1.0
       name: Update version number
       with:
-        regex: ^(version = )(.*)$
-        flags: gm
-        replacement: "$1'${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}'"
-        include: build.gradle
+        path: './gradle.properties'
+        property: mod_version
+        value: ${{inputs.mod-version}}
     
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -54,14 +53,14 @@ jobs:
       run: |
         git config --global user.name '${{ vars.BUILD_ACTOR_NAME }}'
         git config --global user.email '${{ vars.BUILD_ACTOR_EMAIL }}'
-        git commit -am "Bump version to ${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}"
+        git commit -am "Bump version to ${{ inputs.minecraft-version }}-${{ inputs.mod-version }}"
         git push
-        git tag "${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}"
-        git push origin "${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}"
+        git tag "${{ inputs.minecraft-version }}-${{ inputs.mod-version }}"
+        git push origin "${{ inputs.minecraft-version }}-${{ inputs.mod-version }}"
   
     - name: Create release
       env:
         GITHUB_TOKEN: ${{ secrets.token-github }}
-        TAG: ${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}
+        TAG: ${{ inputs.minecraft-version }}-${{ inputs.mod-version }}
       run: |
-        gh release create "$TAG" 'build/libs/*.jar' --generate-notes --title "${{ inputs.minecraft-version }}-${{ inputs.svmm-version }}"
+        gh release create "$TAG" 'build/libs/*.jar' --generate-notes --title "${{ inputs.minecraft-version }}-${{ inputs.mod-version }}"
