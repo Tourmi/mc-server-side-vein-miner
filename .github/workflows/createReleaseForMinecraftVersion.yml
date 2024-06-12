@@ -27,7 +27,7 @@ jobs:
       with:
         ref: release/${{ inputs.minecraft-version }}
 
-    - uses: christian-draeger/write-properties@1.1.0
+    - uses: Reedyuk/write-properties@1.0.3
       name: Update version number
       with:
         path: './gradle.properties'
@@ -52,7 +52,8 @@ jobs:
       run: |
         git config --global user.name '${{ vars.BUILD_ACTOR_NAME }}'
         git config --global user.email '${{ vars.BUILD_ACTOR_EMAIL }}'
-        git commit -am "Bump version to ${{ inputs.minecraft-version }}-${{ inputs.mod-version }}"
+        git add gradle.properties
+        git commit -m "Bump version to ${{ inputs.minecraft-version }}-${{ inputs.mod-version }}"
         git push
         git tag "${{ inputs.minecraft-version }}-${{ inputs.mod-version }}"
         git push origin "${{ inputs.minecraft-version }}-${{ inputs.mod-version }}"
