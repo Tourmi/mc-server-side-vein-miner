@@ -1,0 +1,15 @@
+name: Update release branches from main
+
+on: workflow_dispatch
+
+jobs:
+  update-branches:
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: [release/1.19.2, release/1.20.1]
+    uses: ./.github/workflows/updateBranchFromMain.yml
+    with:
+      branch: ${{matrix.branch}}
+    secrets:
+      token-github: ${{ secrets.GITHUB_TOKEN }}

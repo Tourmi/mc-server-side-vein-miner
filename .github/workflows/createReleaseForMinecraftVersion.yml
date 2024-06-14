@@ -14,7 +14,7 @@ on:
         required: true
 
 jobs:
-  release:
+  build-setup:
     name: release ${{inputs.mod-version}} on Minecraft ${{inputs.minecraft-version}}
     runs-on: ubuntu-latest
     permissions:
@@ -27,7 +27,7 @@ jobs:
       with:
         ref: release/${{ inputs.minecraft-version }}
 
-    - uses: Reedyuk/write-properties@1.0.3
+    - uses: Reedyuk/write-properties@v1.0.3
       name: Update version number
       with:
         path: './gradle.properties'
