@@ -26,7 +26,6 @@ jobs:
       name: Checking out release/${{ inputs.minecraft-version }}
       with:
         ref: release/${{ inputs.minecraft-version }}
-        fetch-depth: 0
 
     - uses: Reedyuk/write-properties@v1.0.3
       name: Update version number
