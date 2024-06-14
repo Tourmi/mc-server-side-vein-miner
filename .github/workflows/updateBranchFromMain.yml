@@ -29,7 +29,7 @@ jobs:
         git config --global user.name '${{ vars.BUILD_ACTOR_NAME }}'
         git config --global user.email '${{ vars.BUILD_ACTOR_EMAIL }}'
         git fetch origin
-        git merge --no-ff --no-commit main
+        git merge --no-ff --no-commit origin/main
         git reset HEAD gradle.properties
         git checkout -- gradle.properties
     
