@@ -25,14 +25,22 @@ jobs:
         fetch-depth: 0
         ref: ${{ inputs.branch }}
     
-    - name: Merge main into ${{inputs.branch}}
+    - name: Prepare merge
       run: |
         git config --global user.name '${{ vars.BUILD_ACTOR_NAME }}'
         git config --global user.email '${{ vars.BUILD_ACTOR_EMAIL }}'
         git fetch origin
+        
+    - name: Merge main into ${{inputs.branch}}
+      continue-on-error: true
+      run: |
         git merge --no-ff --no-commit origin/main
+    
+    - name: Post-merge
+      run: |
         git reset HEAD gradle.properties
         git checkout -- gradle.properties
+        
     
     - name: Set up JDK 17
       uses: actions/setup-java@v4
