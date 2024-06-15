@@ -7,7 +7,6 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -55,22 +54,22 @@ public class MinecraftUtils {
         var tags = list.stream().filter((e) -> e.startsWith("#")).map(e -> e.substring(1)).toList();
         return tags
                 .stream()
-                .map((t) -> ForgeRegistries.BLOCKS.tags().createTagKey(new ResourceLocation(t)))
+                .map((t) -> ForgeRegistries.BLOCKS.tags().createTagKey(ResourceLocation.parse(t)))
                 .anyMatch(bs::is);
     }
 
-    public static void mineBlock(Level level, Player player, BlockPos pos, ItemStack heldItem) {
+    public static void mineBlock(Level level, Player player, BlockPos blockPos, ItemStack heldItem) {
         if (level.isClientSide) return;
 
-        BlockState st = level.getBlockState(pos);
-        heldItem.mineBlock(level, st, pos, player);
-        st.getBlock().popExperience((ServerLevel) level, pos, st.getExpDrop(level, level.getRandom(), pos, heldItem.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE), heldItem.getEnchantmentLevel(Enchantments.SILK_TOUCH)));
-        st.getBlock().playerDestroy(level, player, pos, st, level.getBlockEntity(pos), heldItem);
-        level.removeBlock(pos, false);
+        var blockState = level.getBlockState(blockPos);
+        heldItem.mineBlock(level, blockState, blockPos, player);
+        blockState.getBlock().popExperience((ServerLevel) level, blockPos, EnchantUtils.getExp(level, heldItem, blockPos, blockState));
+        blockState.getBlock().playerDestroy(level, player, blockPos, blockState, level.getBlockEntity(blockPos), heldItem);
+        level.removeBlock(blockPos, false);
         if (SVMMConfig.TELEPORT_ITEMS_TO_PLAYER.get()) {
-            BLOCKS_MINED.put(pos, player);
+            BLOCKS_MINED.put(blockPos, player);
             level.getServer().tell(new TickTask(level.getServer().getTickCount() + 10, () -> {
-                BLOCKS_MINED.remove(pos);
+                BLOCKS_MINED.remove(blockPos);
             }));
         }
     }
