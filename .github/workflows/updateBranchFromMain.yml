@@ -26,6 +26,7 @@ jobs:
         ref: ${{ inputs.branch }}
     
     - name: Merge main into ${{inputs.branch}}
+      continue-on-error: true
       run: |
         git config --global user.name '${{ vars.BUILD_ACTOR_NAME }}'
         git config --global user.email '${{ vars.BUILD_ACTOR_EMAIL }}'
