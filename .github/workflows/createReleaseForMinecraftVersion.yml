@@ -34,10 +34,17 @@ jobs:
         property: mod_version
         value: ${{inputs.mod-version}}
     
-    - name: Set up JDK 17
+    - uses: christian-draeger/read-properties@1.1.1
+      id: java_version
+      name: Read Java version
+      with:
+        path: './gradle.properties'
+        properties: 'java_version'
+    
+    - name: Set up JDK ${{ steps.java_version.outputs.java_version }}
       uses: actions/setup-java@v4
       with:
-        java-version: '17'
+        java-version: '${{ steps.java_version.outputs.java_version }}'
         distribution: 'temurin'
 
     - name: Setup Gradle
