@@ -66,3 +66,9 @@ jobs:
       run: |
         git commit -m "Merged main in branch"
         git push
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4.3.3
+      with:
+        name: build-artifact-${{ inputs.branch }}
+        path: build/libs/svmm-*.jar
