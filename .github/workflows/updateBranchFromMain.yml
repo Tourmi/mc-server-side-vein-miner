@@ -67,8 +67,14 @@ jobs:
         git commit -m "Merged main in branch"
         git push
     
+    - name: Modify branch name for artifact
+      env:
+        name: "${{inputs.branch}}"
+      run: |
+        echo "safe_name=${name/\//-}" >> $GITHUB_ENV
+    
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4.3.3
       with:
-        name: release-artifact
+        name: release-artifact-${{env.safe_name}}
         path: build/libs/svmm-*.jar
