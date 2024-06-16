@@ -17,7 +17,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
     mappings channel: 'official', version: minecraft_version
-    if (disable_reobf) {
+    if (disable_reobf.toBoolean()) {
       reobf = false
     }
     copyIdeResources = true
