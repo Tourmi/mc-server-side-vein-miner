@@ -1,6 +1,10 @@
 package dev.tourmi.svmm.server;
 
+import dev.tourmi.svmm.config.ClientConfig;
+import dev.tourmi.svmm.config.ClientConfigs;
 import dev.tourmi.svmm.config.SVMMConfig;
+import dev.tourmi.svmm.config.TriggerActions;
+import dev.tourmi.svmm.utils.CommandUtils;
 import dev.tourmi.svmm.utils.MinecraftUtils;
 import dev.tourmi.svmm.utils.Utils3D;
 import net.minecraft.core.BlockPos;
@@ -26,6 +30,11 @@ public final class Tunneler {
 
     public static ClientStatus toggleTunneler(UUID playerUUID, int width, int height, int maxDepth) {
         ClientStatus status = ClientStatus.getClientStatus(playerUUID);
+        ClientConfig cfg = ClientConfigs.getClientConfig(playerUUID);
+        TriggerActions triggerAction = SVMMConfig.TRIGGER_WHEN_DEFAULT.get();
+        if (cfg != null) {
+            triggerAction = cfg.TRIGGER_WHEN.get();
+        }
 
         status.tunnelNextBlock = !status.tunnelNextBlock;
         if (!status.tunnelNextBlock) {
@@ -42,7 +51,7 @@ public final class Tunneler {
         status.tunnelWidth = width;
         status.tunnelHeight = height;
         status.tunnelDeep = Integer.min(Integer.min( SVMMConfig.TUNNELING_MAX_BLOCKS.get() / (width * height), maxDepth), SVMMConfig.TUNNELING_MAX_DEPTH.get());
-        status.lastMessage = String.format("The next block mined while not holding sneak will create a %dx%d tunnel that's maximum %d blocks deep.", width, height, status.tunnelDeep);
+        status.lastMessage = String.format("The next block mined will create a %dx%d tunnel that's maximum %d blocks deep.", width, height, status.tunnelDeep);
         status.forceNext = false;
 
         return status;

@@ -13,6 +13,10 @@ public final class CommandUtils {
         return CommandPredicates.isModerator(cc.getSource());
     }
 
+    public static boolean isPlayer(CommandContext<CommandSourceStack> cc) {
+        return CommandPredicates.isPlayer(cc.getSource());
+    }
+
     public static boolean isConsole(CommandContext<CommandSourceStack> cc) {
         return CommandPredicates.isConsole(cc.getSource());
     }

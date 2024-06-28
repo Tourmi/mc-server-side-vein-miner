@@ -114,6 +114,8 @@ public final class SVMMConfig {
 
     public static final ForgeConfigSpec.BooleanValue RUNTIME_CONFIG_DISABLED;
 
+    public static final ForgeConfigSpec.EnumValue<TriggerActions> TRIGGER_WHEN_DEFAULT;
+
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
@@ -121,7 +123,8 @@ public final class SVMMConfig {
         MOD_DISABLED = builder.comment("Whether or not the entire mod is disabled")
                 .define("mod_disabled", false);
         MOD_DEFAULT_DISABLED = builder.comment("Whether or not the mod is disabled by default for new players.\n" +
-                "They may enable it with /svmm enable").define("mod_disabled_default", false);
+                "They may enable it with /svmm enable")
+                .define("mod_disabled_default", false);
         MOD_DEFAULT_RESTRICTED = builder.comment("Whether or not the entire mod is restricted by default for new users")
                 .define("default_restricted", false);
         MAXIMUM_BLOCKS_TO_BREAK = builder.comment("The maximum amount of blocks the mod is allowed to break at once")
@@ -136,6 +139,9 @@ public final class SVMMConfig {
                 .define("teleport_items_to_player", true);
         RUNTIME_CONFIG_DISABLED = builder.comment("Whether or not to allow moderators to modify the config at runtime")
                 .define("runtime_config_edit_disabled", false);
+        TRIGGER_WHEN_DEFAULT = builder.comment("The default condition for when the mod triggers that new players will have")
+                .worldRestart()
+                .defineEnum("trigger_when_default", TriggerActions.SHIFT_NOT_HELD);
 
         builder.push("giant-vein-mining");
         GIANT_VEIN_MINING_DISABLED = builder.comment("Whether or not giant vein mining is disabled on the server")

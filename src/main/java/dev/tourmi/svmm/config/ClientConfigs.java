@@ -6,6 +6,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ConfigTracker;
 import net.minecraftforge.fml.config.ModConfig;
 
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.UUID;
@@ -21,10 +22,14 @@ public final class ClientConfigs {
         return clientConfigs.get(player.getUUID());
     }
 
+    public static @Nullable ClientConfig getClientConfig(UUID uuid) {
+        return clientConfigs.getOrDefault(uuid, null);
+    }
+
     private static void loadOrCreateClientConfig(Entity player) {
         UUID playerUUID = player.getUUID();
         ClientConfig cfg = new ClientConfig(playerUUID);
-        String configPath = "svmm-player-configs/" + playerUUID.toString() + ".toml";
+        String configPath = "svmm-player-configs/" + playerUUID + ".toml";
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, cfg.SPEC, configPath);
         Path serverConfig = player.getServer().getWorldPath(new LevelResource("serverconfig"));
         ConfigTracker.INSTANCE.loadConfigs(ModConfig.Type.SERVER, serverConfig);

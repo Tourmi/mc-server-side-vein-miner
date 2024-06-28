@@ -25,8 +25,9 @@ public final class ForceCommand implements ICommand {
         if (!checkIsAllowed(cc)) return 0;
         Player player = cc.getSource().getPlayer();
         ClientStatus status = ClientStatus.getClientStatus(player.getUUID());
+        ClientConfig cfg = CommandUtils.getSourceConfig(cc);
         status.forceNext = !status.forceNext;
-        String message = status.forceNext ? "Next block mined without holding shift will be vein mined" : "Cancelled vein mine";
+        String message = status.forceNext ? cfg.TRIGGER_WHEN.get().formatConditionText("Next block mined{0} will be vein mined", " {0}") : "Cancelled vein mine";
         player.sendSystemMessage(Component.literal(message));
         return Command.SINGLE_SUCCESS;
     }
