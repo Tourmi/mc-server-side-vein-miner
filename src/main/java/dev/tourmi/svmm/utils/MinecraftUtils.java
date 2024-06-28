@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class MinecraftUtils {
+public final class MinecraftUtils {
     public static final HashMap<BlockPos, Player> BLOCKS_MINED = new HashMap<>();
 
     public static Stream<String> getColorNames() {

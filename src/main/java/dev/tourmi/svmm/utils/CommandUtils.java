@@ -1,20 +1,24 @@
 package dev.tourmi.svmm.utils;
 
 import com.mojang.brigadier.context.CommandContext;
+import dev.tourmi.svmm.commands.CommandPredicates;
 import dev.tourmi.svmm.config.ClientConfig;
 import dev.tourmi.svmm.config.ClientConfigs;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-public class CommandUtils {
-    public static boolean isModerator(CommandSourceStack cs) {
-        return !cs.isPlayer() || cs.hasPermission(Commands.LEVEL_MODERATORS);
+public final class CommandUtils {
+    public static boolean isModerator(CommandContext<CommandSourceStack> cc) {
+        return CommandPredicates.isModerator(cc.getSource());
     }
 
-    public static boolean isModerator(CommandContext<CommandSourceStack> cc) {
-        return isModerator(cc.getSource());
+    public static boolean isPlayer(CommandContext<CommandSourceStack> cc) {
+        return CommandPredicates.isPlayer(cc.getSource());
+    }
+
+    public static boolean isConsole(CommandContext<CommandSourceStack> cc) {
+        return CommandPredicates.isConsole(cc.getSource());
     }
 
     public static void sendMessage(CommandContext<CommandSourceStack> commandContext, String message) {
@@ -25,12 +29,8 @@ public class CommandUtils {
         }
     }
 
-    public static boolean isFromPlayer(CommandContext<CommandSourceStack> commandContext) {
-        return commandContext.getSource().getEntity() instanceof Player;
-    }
-
     public static ClientConfig getSourceConfig(CommandSourceStack cs) {
-        return ClientConfigs.getClientConfig(cs.getPlayer().getUUID());
+        return ClientConfigs.getClientConfig(cs.getPlayer());
     }
 
     public static ClientConfig getSourceConfig(CommandContext<CommandSourceStack> commandContext) {
