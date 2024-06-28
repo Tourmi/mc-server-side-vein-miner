@@ -1,6 +1,5 @@
 package dev.tourmi.svmm.commands;
 
-import com.electronwill.nightconfig.core.Config;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
