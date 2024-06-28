@@ -117,7 +117,7 @@ public final class SVMMConfig {
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
-        builder.push("Server-side Vein Miner configuration");
+        builder.push("svmm");
         MOD_DISABLED = builder.comment("Whether or not the entire mod is disabled")
                 .define("mod_disabled", false);
         MOD_DEFAULT_DISABLED = builder.comment("Whether or not the mod is disabled by default for new players.\n" +
@@ -135,9 +135,9 @@ public final class SVMMConfig {
         TELEPORT_ITEMS_TO_PLAYER = builder.comment("Whether or not to teleport the mined items to the player")
                 .define("teleport_items_to_player", true);
         RUNTIME_CONFIG_DISABLED = builder.comment("Whether or not to allow moderators to modify the config at runtime")
-                .define("runtime_config_edit", true);
+                .define("runtime_config_edit_disabled", false);
 
-        builder.push("Giant vein mining configuration");
+        builder.push("giant-vein-mining");
         GIANT_VEIN_MINING_DISABLED = builder.comment("Whether or not giant vein mining is disabled on the server")
                 .define("giant_vein_mining_disabled", false);
         GIANT_VEIN_MINING_DEFAULT_DISABLED = builder.comment("Whether or not giant vein mining is disabled by default for new players.\n" +
@@ -153,7 +153,7 @@ public final class SVMMConfig {
                 .defineList("giant_vein_blacklist", DEFAULT_GIANT_VEIN_BLACKLIST.get(), String.class::isInstance);
         builder.pop();
 
-        builder.push("Tunneling configuration");
+        builder.push("tunneling");
         TUNNELING_DISABLED = builder.comment("Whether or not tunneling is disabled on the server")
                 .define("tunneling_disabled", false);
         TUNNELING_DEFAULT_RESTRICTED = builder.comment("Whether or not tunneling is restricted by default for new players.\n" +
@@ -175,7 +175,7 @@ public final class SVMMConfig {
                 .defineList("tunneling_blacklist", DEFAULT_TUNNELING_BLACKLIST.get(), String.class::isInstance);
         builder.pop();
 
-        builder.push("/svmm force configuration");
+        builder.push("force-vein-mining");
         FORCE_DISABLED = builder.comment("Whether or not /svmm force is disabled on the server")
                         .define("force_disabled", false);
         FORCE_DEFAULT_RESTRICTED = builder.comment("Whether or not /svmm force is restricted by default")

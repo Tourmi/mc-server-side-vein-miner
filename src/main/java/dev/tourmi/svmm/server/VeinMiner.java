@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import java.util.List;
 
 
-public class VeinMiner {
+public final class VeinMiner {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public void onBlockBroken(BlockEvent.BreakEvent event) {
@@ -49,7 +49,7 @@ public class VeinMiner {
     }
 
     private boolean canUseMod(Player player, ItemStack heldItem, BlockState minedBlockState) {
-        ClientConfig cfg = ClientConfigs.getClientConfig(player.getUUID());
+        ClientConfig cfg = ClientConfigs.getClientConfig(player);
 
         if (cfg.MOD_DISABLED.get()) return false;
         if (cfg.MOD_RESTRICTED.get()) return false;
@@ -61,7 +61,7 @@ public class VeinMiner {
     private boolean canTunnel(Player player, BlockState blockState) {
         if (SVMMConfig.TUNNELING_DISABLED.get()) return false;
 
-        ClientConfig cfg = ClientConfigs.getClientConfig(player.getUUID());
+        ClientConfig cfg = ClientConfigs.getClientConfig(player);
         if (cfg.TUNNELING_RESTRICTED.get()) return false;
 
         if (!Tunneler.canTunnel(player.getUUID())) return false;
@@ -121,7 +121,7 @@ public class VeinMiner {
     private boolean canGiantVeinMine(Player player, BlockState minedBlockState) {
         if (SVMMConfig.GIANT_VEIN_MINING_DISABLED.get()) return false;
 
-        ClientConfig cfg = ClientConfigs.getClientConfig(player.getUUID());
+        ClientConfig cfg = ClientConfigs.getClientConfig(player);
         if (cfg.GIANT_VEIN_MINING_DISABLED.get()) return false;
         if (cfg.GIANT_VEIN_MINING_RESTRICTED.get()) return false;
 

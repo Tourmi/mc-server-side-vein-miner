@@ -6,6 +6,5 @@ import net.minecraft.commands.CommandSourceStack;
 
 public interface ICommand {
     LiteralArgumentBuilder<CommandSourceStack> getCommand();
-    int defaultExecute(CommandContext<CommandSourceStack> commandContext);
     String getHelpText(CommandContext<CommandSourceStack> commandContext);
 }

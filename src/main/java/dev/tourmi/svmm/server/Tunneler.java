@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Collection;
 import java.util.UUID;
 
-public class Tunneler {
+public final class Tunneler {
     public static ClientStatus toggleTunneler(UUID playerUUID) {
         ClientStatus status = ClientStatus.getClientStatus(playerUUID);
         return toggleTunneler(playerUUID, status.tunnelWidth, status.tunnelHeight, status.tunnelDeep);

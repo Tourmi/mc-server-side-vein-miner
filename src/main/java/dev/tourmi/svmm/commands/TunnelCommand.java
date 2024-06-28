@@ -12,12 +12,13 @@ import dev.tourmi.svmm.utils.CommandUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
-public class TunnelCommand implements ICommand {
+public final class TunnelCommand implements ICommand {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand(){
         return Commands.literal("tunnel")
-                .requires(cs -> !SVMMConfig.TUNNELING_DISABLED.get())
-                .requires(cs -> !CommandUtils.getSourceConfig(cs).TUNNELING_RESTRICTED.get())
+                .requires(CommandPredicates::isTunnelingEnabled)
+                .requires(CommandPredicates::isPlayer)
+                .requires(CommandPredicates::canPlayerAccessTunneling)
                 .then(Commands.literal("cancel")
                         .executes(this::cancelTunnel)) // /svmm tunnel cancel
                 .then(Commands.argument("width", IntegerArgumentType.integer(1))
@@ -29,12 +30,11 @@ public class TunnelCommand implements ICommand {
     }
 
     @Override
-    public int defaultExecute(CommandContext<CommandSourceStack> cc) {
-        return tunnel(cc);
-    }
-
-    @Override
     public String getHelpText(CommandContext<CommandSourceStack> cc) {
+        if (CommandUtils.isConsole(cc)) {
+            return "";
+        }
+
         ClientConfig cfg = CommandUtils.getSourceConfig(cc);
         if (!CommandUtils.isModerator(cc) && (cfg.MOD_RESTRICTED.get() || cfg.MOD_DISABLED.get() || cfg.TUNNELING_RESTRICTED.get())) {
             return "";

@@ -10,7 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 
 import java.util.Collection;
 
-public class HelpCommand implements ICommand {
+public final class HelpCommand implements ICommand {
     private final Collection<ICommand> commands;
 
     public HelpCommand(Collection<ICommand> commands) {
@@ -20,15 +20,15 @@ public class HelpCommand implements ICommand {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return Commands.literal("help")
+                .executes(this::execute) // /svmm help
                 .then(Commands.literal("tunnel")
-                        .requires(cs -> !SVMMConfig.TUNNELING_DISABLED.get())
-                        .requires(cs -> CommandUtils.isModerator(cs) || !CommandUtils.getSourceConfig(cs).TUNNELING_RESTRICTED.get())
-                        .executes(this::executeTunnel)) // /svmm help tunnel
-                .executes(this::defaultExecute); // /svmm help
+                        .requires(CommandPredicates::isTunnelingEnabled)
+                        .requires(CommandPredicates::isPlayer)
+                        .requires(CommandPredicates::canPlayerAccessTunneling)
+                        .executes(this::executeTunnel)); // /svmm help tunnel
     }
 
-    @Override
-    public int defaultExecute(CommandContext<CommandSourceStack> commandContext) {
+    public int execute(CommandContext<CommandSourceStack> commandContext) {
         CommandUtils.sendMessage(commandContext, getHelpMessage(commandContext));
         return Command.SINGLE_SUCCESS;
     }
@@ -52,6 +52,10 @@ public class HelpCommand implements ICommand {
     }
 
     public int executeTunnel(CommandContext<CommandSourceStack> commandContext) {
+        if (CommandUtils.isConsole(commandContext)) {
+            return 0;
+        }
+
         CommandUtils.sendMessage(commandContext, """
                 This command allows to automatically dig tunnels. Holding the sneak key allows to delay the creation of the tunnel.
                 When using an even number for one of the dimensions of the tunnel, the tunnel center will be rounded towards the top left block
