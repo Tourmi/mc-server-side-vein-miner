@@ -3,6 +3,7 @@ package dev.tourmi.svmm.config;
 import dev.tourmi.svmm.utils.PredicateUtils;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public final class ClientConfig {
@@ -26,7 +27,7 @@ public final class ClientConfig {
 
         builder.push("self-config");
         TRIGGER_WHEN = builder.comment("Condition for when the mod is triggered")
-                .defineEnum("trigger_when", SVMMConfig.TRIGGER_WHEN_DEFAULT, PredicateUtils::always, TriggerActions.class);
+                .defineEnum("trigger_when", SVMMConfig.TRIGGER_WHEN_DEFAULT, o -> o instanceof TriggerActions, TriggerActions.class);
         builder.pop();
 
         builder.push("toggles");

@@ -35,4 +35,9 @@ public enum TriggerActions {
 
         return MessageFormat.format(baseMessage, MessageFormat.format(addedText, description));
     }
+
+    @Override
+    public String toString() {
+        return super.toString().toLowerCase();
+    }
 }
