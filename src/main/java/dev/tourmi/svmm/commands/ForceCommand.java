@@ -11,28 +11,33 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-public class ForceCommand implements ICommand {
+public final class ForceCommand implements ICommand {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return net.minecraft.commands.Commands.literal("force")
-                .requires(cs -> !SVMMConfig.FORCE_DISABLED.get())
-                .requires(cs -> CommandUtils.isModerator(cs) || !CommandUtils.getSourceConfig(cs).FORCE_RESTRICTED.get())
+                .requires(CommandPredicates::isForceVeinMiningEnabled)
+                .requires(CommandPredicates::isPlayer)
+                .requires(CommandPredicates::canPlayerAccessForceVeinMining)
                 .executes(this::defaultExecute); // /svmm force
     }
 
-    @Override
     public int defaultExecute(CommandContext<CommandSourceStack> cc) {
         if (!checkIsAllowed(cc)) return 0;
         Player player = cc.getSource().getPlayer();
         ClientStatus status = ClientStatus.getClientStatus(player.getUUID());
+        ClientConfig cfg = CommandUtils.getSourceConfig(cc);
         status.forceNext = !status.forceNext;
-        String message = status.forceNext ? "Next block mined without holding shift will be vein mined" : "Cancelled vein mine";
+        String message = status.forceNext ? cfg.TRIGGER_WHEN.get().formatConditionText("Next block mined{0} will be vein mined", " {0}") : "Cancelled vein mine";
         player.sendSystemMessage(Component.literal(message));
         return Command.SINGLE_SUCCESS;
     }
 
     @Override
     public String getHelpText(CommandContext<CommandSourceStack> cc) {
+        if (CommandUtils.isConsole(cc)) {
+            return "";
+        }
+
         ClientConfig cfg = CommandUtils.getSourceConfig(cc);
         if (!CommandUtils.isModerator(cc) && (cfg.MOD_DISABLED.get() || cfg.FORCE_RESTRICTED.get())) {
             return "";
@@ -45,7 +50,7 @@ public class ForceCommand implements ICommand {
     }
 
     private boolean checkIsAllowed(CommandContext<CommandSourceStack> cc) {
-        if (!cc.getSource().isPlayer())  {
+        if (CommandUtils.isConsole(cc))  {
             CommandUtils.sendMessage(cc, "Only players may use this command");
             return false;
         }
