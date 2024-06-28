@@ -7,6 +7,8 @@ import dev.tourmi.svmm.config.SVMMConfig;
 import dev.tourmi.svmm.server.ItemTeleporter;
 import dev.tourmi.svmm.server.Tunneler;
 import dev.tourmi.svmm.server.VeinMiner;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -19,15 +21,16 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-@Mod(SVMM.MODID)
+@Mod(SVMM.MOD_ID)
 public class SVMM
 {
-    public static final String MODID = "svmm";
+    public static final String MOD_ID = "svmm";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    private VeinMiner veinMiner;
+    private final VeinMiner veinMiner;
 
     public SVMM()
     {
@@ -55,7 +58,7 @@ public class SVMM
     }
 
     @SubscribeEvent
-    public void onPlayerMine(PlayerInteractEvent event) {
+    public void onPlayerMine(PlayerInteractEvent.LeftClickBlock event) {
         if (event.getSide().isClient()) return;
 
         Tunneler.updateFaceMined(event.getEntity().getUUID(), event.getFace());
@@ -63,7 +66,7 @@ public class SVMM
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        ClientConfigs.getClientConfig(event.getEntity().getUUID());
+        ClientConfigs.getClientConfig((event.getEntity()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

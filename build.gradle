@@ -2,7 +2,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
 }
 
 version = "${minecraft_version}-${mod_version}"
@@ -21,6 +21,8 @@ minecraft {
       reobf = false
     }
     copyIdeResources = true
+    enableEclipsePrepareRuns = true
+    enableIdeaPrepareRuns = true
     runs {
         configureEach {
             workingDirectory project.file('run')
@@ -51,50 +53,51 @@ minecraft {
     }
 }
 
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+}
+
 processResources {
-    inputs.property "version", version
-    
     def properties = [
-        mod_id:mod_id,
-        version:version,
-        mod_version:mod_version,
-        mod_group:mod_group,
-        mod_name:mod_name,
-        mod_description:mod_description,
-        mod_credits:mod_credits,
-        mod_issue_tracker:mod_issue_tracker,
-        mod_url:mod_url,
-        mod_license:mod_license,
-        
-        author_name:author_name,
-        author_domain:author_domain,
-        
-        minecraft_version:minecraft_version,
-        minecraft_min_version:minecraft_min_version,
-        minecraft_max_version:minecraft_max_version,
-        
-        forge_version:forge_version,
-        forge_min_version:forge_min_version,
-        forge_max_version:forge_max_version,
-        forge_update_json_url:forge_update_json_url,
-        forge_displaytest_value:forge_displaytest_value,
-        forge_minecraft_side:forge_minecraft_side
+            mod_id:mod_id,
+            version:version,
+            mod_version:mod_version,
+            mod_group:mod_group,
+            mod_name:mod_name,
+            mod_description:mod_description,
+            mod_credits:mod_credits,
+            mod_issue_tracker:mod_issue_tracker,
+            mod_url:mod_url,
+            mod_license:mod_license,
+
+            author_name:author_name,
+            author_domain:author_domain,
+
+            minecraft_version:minecraft_version,
+            minecraft_min_version:minecraft_min_version,
+            minecraft_max_version:minecraft_max_version,
+
+            forge_version:forge_version,
+            forge_min_version:forge_min_version,
+            forge_max_version:forge_max_version,
+            forge_update_json_url:forge_update_json_url,
+            forge_displaytest_value:forge_displaytest_value,
+            forge_minecraft_side:forge_minecraft_side
     ]
-    
+
+    inputs.properties properties
+
     from(sourceSets.main.resources.srcDirs) {
         duplicatesStrategy 'include'
         include 'META-INF/mods.toml'
         expand properties
     }
-}
-
-sourceSets.main.resources {
-    srcDir 'src/generated/resources'
-}
-
-dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 jar {

@@ -1,28 +1,38 @@
 package dev.tourmi.svmm.config;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ConfigTracker;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.loading.FMLPaths;
 
+import javax.annotation.Nullable;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class ClientConfigs {
-    private static HashMap<UUID, ClientConfig> clientConfigs = new HashMap<>();
+public final class ClientConfigs {
+    private final static HashMap<UUID, ClientConfig> clientConfigs = new HashMap<>();
 
-    public static ClientConfig getClientConfig(UUID playerUUID) {
-        if (!clientConfigs.containsKey(playerUUID)) {
-            loadOrCreateClientConfig(playerUUID);
+    public static ClientConfig getClientConfig(Entity player) {
+        if (!clientConfigs.containsKey(player.getUUID())) {
+            loadOrCreateClientConfig(player);
         }
-        return clientConfigs.get(playerUUID);
+
+        return clientConfigs.get(player.getUUID());
     }
 
-    private static void loadOrCreateClientConfig(UUID playerUUID) {
-        ClientConfig cfg = new ClientConfig();
-        String configPath = "svmm-player-configs/" + playerUUID.toString() + ".toml";
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, cfg.SPEC, configPath);
-        ConfigTracker.INSTANCE.loadConfigs(ModConfig.Type.COMMON, FMLPaths.CONFIGDIR.relative());
+    public static @Nullable ClientConfig getClientConfig(UUID uuid) {
+        return clientConfigs.getOrDefault(uuid, null);
+    }
+
+    private static void loadOrCreateClientConfig(Entity player) {
+        UUID playerUUID = player.getUUID();
+        ClientConfig cfg = new ClientConfig(playerUUID);
+        String configPath = "svmm-player-configs/" + playerUUID + ".toml";
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, cfg.SPEC, configPath);
+        Path serverConfig = player.getServer().getWorldPath(new LevelResource("serverconfig"));
+        ConfigTracker.INSTANCE.loadConfigs(ModConfig.Type.SERVER, serverConfig);
         clientConfigs.put(playerUUID, cfg);
     }
 }

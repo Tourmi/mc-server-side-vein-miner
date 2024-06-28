@@ -8,7 +8,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class EnchantUtils {
+public final class EnchantUtils {
     public static int getExp(Level level, ItemStack heldItem, BlockPos pos, BlockState st) {
         var lookup = level.holderLookup(Registries.ENCHANTMENT);
         int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(lookup.getOrThrow(Enchantments.FORTUNE), heldItem);
