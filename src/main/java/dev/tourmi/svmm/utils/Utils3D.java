@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class Utils3D {
+public final class Utils3D {
     public static Stream<BlockPos> getSameBlocksConnectedToPos(String blockName, BlockPos pos, Level level) {
         return BlockPos.betweenClosedStream(pos.offset(-1, -1, -1), pos.offset(1, 1, 1))
                 .filter(bpos -> !bpos.equals(pos) && MinecraftUtils.getBlockName(level.getBlockState(bpos)).equals(blockName));

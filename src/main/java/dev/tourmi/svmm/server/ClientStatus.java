@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ClientStatus {
+public final class ClientStatus {
     public boolean tunnelNextBlock = false;
     public int tunnelWidth = 1;
     public int tunnelHeight = 2;
@@ -20,7 +20,7 @@ public class ClientStatus {
     public String lastMessage = "";
     public int lastBlocksMined = 0;
 
-    private static Map<UUID, ClientStatus> playerClientStatuses = new HashMap<>();
+    private final static Map<UUID, ClientStatus> playerClientStatuses = new HashMap<>();
 
     public static ClientStatus getClientStatus(UUID playerUUID) {
         if (!playerClientStatuses.containsKey(playerUUID)) {

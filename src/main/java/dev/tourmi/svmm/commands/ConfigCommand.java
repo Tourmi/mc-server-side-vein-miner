@@ -15,51 +15,48 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ConfigCommand implements ICommand {
+public final class ConfigCommand implements ICommand {
     private enum ConfigListKeys {
-        block_white_list(SVMMConfig.BLOCK_WHITELIST),
-        block_black_list(SVMMConfig.BLOCK_BLACKLIST),
-        giant_vein_starter_ore(SVMMConfig.GIANT_VEIN_STARTER_BLOCKS),
-        giant_vein_whitelist(SVMMConfig.GIANT_VEIN_WHITELIST),
-        giant_vein_blacklist(SVMMConfig.GIANT_VEIN_BLACKLIST),
-        tunneling_whitelist(SVMMConfig.TUNNELING_WHITELIST),
-        tunneling_blacklist(SVMMConfig.TUNNELING_BLACKLIST),
-        force_blacklist(SVMMConfig.FORCE_BLACKLIST);
+        BLOCK_WHITE_LIST(SVMMConfig.BLOCK_WHITELIST),
+        BLOCK_BLACK_LIST(SVMMConfig.BLOCK_BLACKLIST),
+        GIANT_VEIN_STARTER_ORE(SVMMConfig.GIANT_VEIN_STARTER_BLOCKS),
+        GIANT_VEIN_WHITELIST(SVMMConfig.GIANT_VEIN_WHITELIST),
+        GIANT_VEIN_BLACKLIST(SVMMConfig.GIANT_VEIN_BLACKLIST),
+        TUNNELING_WHITELIST(SVMMConfig.TUNNELING_WHITELIST),
+        TUNNELING_BLACKLIST(SVMMConfig.TUNNELING_BLACKLIST),
+        FORCE_BLACKLIST(SVMMConfig.FORCE_BLACKLIST);
 
         final ForgeConfigSpec.ConfigValue<List<? extends String>> config;
 
         ConfigListKeys(ForgeConfigSpec.ConfigValue<List<? extends String>> config) {
             this.config = config;
         }
+
+        @Override
+        public String toString() {
+            return super.toString().toLowerCase();
+        }
     }
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
-        var list = Commands.literal("list")
-                .executes(this::executeList);
+        var configCommand = Commands.literal("config")
+                .requires(CommandPredicates::isRuntimeConfigEnabled)
+                .requires(CommandPredicates::isModerator)
+                .executes(this::defaultExecute);
 
         for (var key : ConfigListKeys.values()) {
-            list.then(Commands.literal(key.toString())
+            configCommand = configCommand.then(Commands.literal(key.toString())
+                    .executes(ctx -> this.executeConfigList(ctx, key)) // /svmm config {configKey}
                     .then(Commands.literal("add")
                             .then(Commands.argument("value", StringArgumentType.string())
-                                    .executes(ctx -> this.executeAdd(ctx, key)))) // /svmm config list {configKey} add {value}
+                                    .executes(ctx -> this.executeAdd(ctx, key)))) // /svmm config {configKey} add {value}
                     .then(Commands.literal("remove")
                             .then(Commands.argument("value", StringArgumentType.string())
-                                    .executes(ctx -> this.executeRemove(ctx, key)))) // /svmm config list {configKey} remove {value}
-                    .executes(ctx -> this.executeConfigList(ctx, key))); // /svmm config list {configKey}
+                                    .executes(ctx -> this.executeRemove(ctx, key))))); // /svmm config {configKey} remove {value}
         }
 
-        return Commands.literal("config")
-                .requires(cs -> !SVMMConfig.RUNTIME_CONFIG_DISABLED.get())
-                .requires(CommandUtils::isModerator)
-                .then(list) // /svmm config list
-                .executes(this::defaultExecute); // /svmm config
-    }
-
-    @Override
-    public int defaultExecute(CommandContext<CommandSourceStack> cc) {
-
-        return Command.SINGLE_SUCCESS;
+        return configCommand;
     }
 
     @Override
@@ -69,18 +66,22 @@ public class ConfigCommand implements ICommand {
         }
 
         return """
-                - /svmm config list
+                - /svmm config
                     Lists the available config keys that can be modified
-                - /svmm config list {configKey}
-                    Displays the items in the configKey list
-                - /svmm config list {configKey} [add|remove] {value}
+                - /svmm config {configKey}
+                    Displays the value of the config key
+                - /svmm config {configKey} [add|remove] {value}
                     Adds or removes the given {value} to the given {configKey}
                 """;
     }
 
-    private int executeList(CommandContext<CommandSourceStack> cc) {
-        CommandUtils.sendMessage(cc, "Available configuration keys");
-        CommandUtils.sendMessage(cc, Arrays.stream(ConfigListKeys.values()).map(Enum::name).collect(Collectors.joining(", ")));
+    private int defaultExecute(CommandContext<CommandSourceStack> cc) {
+        CommandUtils.sendMessage(cc, "Available configuration keys:");
+        CommandUtils.sendMessage(cc, Arrays
+                .stream(ConfigListKeys.values())
+                .map(Enum::name)
+                .collect(Collectors.joining(", ")));
+
         return Command.SINGLE_SUCCESS;
     }
 
