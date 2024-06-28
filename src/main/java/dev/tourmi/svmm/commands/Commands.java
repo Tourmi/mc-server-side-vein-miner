@@ -17,6 +17,7 @@ public final class Commands {
         add(new ForceCommand());
         add(new TunnelCommand());
         add(new ConfigCommand());
+        add(new ServerConfigCommand());
 
         add(new HelpCommand(this));
     }};

@@ -32,7 +32,6 @@ public final class ToggleFeaturesCommand implements ICommand {
     public LiteralArgumentBuilder<CommandSourceStack> getCommand() {
         return Commands.literal(action)
                 .requires(CommandPredicates::isPlayer)
-                .requires(CommandPredicates::canPlayerAccessMod)
                 .then(Commands.literal("giantVein")
                         .requires(CommandPredicates::isGiantVeinMiningEnabled)
                         .requires(CommandPredicates::canPlayerAccessGiantVeinMining)
@@ -43,10 +42,6 @@ public final class ToggleFeaturesCommand implements ICommand {
     @Override
     public String getHelpText(CommandContext<CommandSourceStack> cc) {
         if (CommandUtils.isConsole(cc)) {
-            return "";
-        }
-
-        if (CommandUtils.getSourceConfig(cc).MOD_RESTRICTED.get()) {
             return "";
         }
 
