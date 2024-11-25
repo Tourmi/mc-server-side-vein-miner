@@ -8,6 +8,7 @@ import dev.tourmi.svmm.utils.MinecraftUtils;
 import dev.tourmi.svmm.utils.Utils3D;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -50,10 +51,10 @@ public final class VeinMiner {
 
     private boolean canUseMod(Player player, ItemStack heldItem, BlockState minedBlockState) {
         ClientConfig cfg = ClientConfigs.getClientConfig(player);
+		LOGGER.info("P2.5: {}, {}, {}", player, heldItem, minedBlockState);
 
         if (cfg.MOD_DISABLED.get()) return false;
         if (cfg.MOD_RESTRICTED.get()) return false;
-        if (player.isCreative()) return false;
         if (!cfg.TRIGGER_WHEN.get().shouldTrigger(player)) return false;
         return heldItem.isCorrectToolForDrops(minedBlockState);
     }
@@ -68,7 +69,8 @@ public final class VeinMiner {
 
         if (!canMine(blockState, SVMMConfig.TUNNELING_WHITELIST.get(), SVMMConfig.TUNNELING_BLACKLIST.get())) {
             Tunneler.cancelTunnel(player.getUUID());
-            player.sendSystemMessage(Component.literal("Cancelled tunneling since the block that was mined is not part of the allowed list of blocks"));
+			ServerPlayer serverPlayer = (ServerPlayer) player; 
+            serverPlayer.sendSystemMessage(Component.literal("Cancelled tunneling since the block that was mined is not part of the allowed list of blocks"));
             return false;
         }
 
@@ -88,7 +90,8 @@ public final class VeinMiner {
         if (status.forceNext) {
             boolean canForceMine = !MinecraftUtils.isBlockInList(minedBlockState, SVMMConfig.FORCE_BLACKLIST.get());
             if (!canForceMine) {
-                player.sendSystemMessage(Component.literal("You may not force vein mine this block"));
+				ServerPlayer serverPlayer = (ServerPlayer) player; 
+                serverPlayer.sendSystemMessage(Component.literal("You may not force vein mine this block"));
                 status.forceNext = false;
             }
             return canForceMine;
@@ -111,7 +114,10 @@ public final class VeinMiner {
         ClientStatus status = ClientStatus.getClientStatus(player.getUUID());
         if (status.forceNext) {
             status.forceNext = false;
-            player.sendSystemMessage(Component.literal("Force vein mine completed"));
+
+			ServerPlayer serverPlayer = (ServerPlayer) player; 
+            serverPlayer.sendSystemMessage(Component.literal("Force vein mine completed"));
+
             if (SVMMConfig.FORCE_LOG_USAGE.get()) {
                 LOGGER.info(player.getName().getString() + " force mined block " + MinecraftUtils.getBlockName(blockState) + " at position " + blockPos.toShortString());
             }

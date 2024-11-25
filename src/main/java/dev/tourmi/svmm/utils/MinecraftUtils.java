@@ -59,19 +59,21 @@ public final class MinecraftUtils {
     }
 
     public static void mineBlock(Level level, Player player, BlockPos blockPos, ItemStack heldItem) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         var blockState = level.getBlockState(blockPos);
         heldItem.mineBlock(level, blockState, blockPos, player);
         blockState.getBlock().popExperience((ServerLevel) level, blockPos, EnchantUtils.getExp(level, heldItem, blockPos, blockState));
         blockState.getBlock().playerDestroy(level, player, blockPos, blockState, level.getBlockEntity(blockPos), heldItem);
         level.removeBlock(blockPos, false);
-        if (SVMMConfig.TELEPORT_ITEMS_TO_PLAYER.get()) {
-            BLOCKS_MINED.put(blockPos, player);
-            level.getServer().tell(new TickTask(level.getServer().getTickCount() + 10, () -> {
-                BLOCKS_MINED.remove(blockPos);
-            }));
-        }
+
+		if (SVMMConfig.TELEPORT_ITEMS_TO_PLAYER.get()) {
+			BLOCKS_MINED.put(blockPos, player);
+
+			((ServerLevel) level).getServer().execute(() -> {
+				BLOCKS_MINED.remove(blockPos);
+			});
+		}
     }
 
     public static void mineBlocks(Level level, Player player, ItemStack heldItem, Collection<BlockPos> blocks) {
