@@ -51,11 +51,12 @@ public final class VeinMiner {
 
     private boolean canUseMod(Player player, ItemStack heldItem, BlockState minedBlockState) {
         ClientConfig cfg = ClientConfigs.getClientConfig(player);
-		LOGGER.info("P2.5: {}, {}, {}", player, heldItem, minedBlockState);
 
         if (cfg.MOD_DISABLED.get()) return false;
         if (cfg.MOD_RESTRICTED.get()) return false;
+		if (player.isCreative()) return false;
         if (!cfg.TRIGGER_WHEN.get().shouldTrigger(player)) return false;
+
         return heldItem.isCorrectToolForDrops(minedBlockState);
     }
 
