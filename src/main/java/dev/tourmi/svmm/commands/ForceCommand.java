@@ -30,7 +30,7 @@ public final class ForceCommand implements ICommand {
         status.forceNext = !status.forceNext;
         String message = status.forceNext ? cfg.TRIGGER_WHEN.get().formatConditionText("Next block mined{0} will be vein mined", " {0}") : "Cancelled vein mine";
 
-		ServerPlayer serverPlayer = (ServerPlayer) player; 
+        ServerPlayer serverPlayer = (ServerPlayer) player; 
         serverPlayer.sendSystemMessage(Component.literal(message));
 
         return Command.SINGLE_SUCCESS;

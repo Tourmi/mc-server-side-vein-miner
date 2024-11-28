@@ -19,7 +19,6 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import org.slf4j.Logger;
 
@@ -31,11 +30,11 @@ public class SVMM
 
     private final VeinMiner veinMiner;
 
-    public SVMM(FMLJavaModLoadingContext modLoadingContext)
+    public SVMM()
     {
         veinMiner = new VeinMiner();
 
-        modLoadingContext.registerConfig(ModConfig.Type.SERVER, SVMMConfig.SPEC, "svmm-config.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SVMMConfig.SPEC, "svmm-config.toml");
 
         MinecraftForge.EVENT_BUS.register(this);
     }

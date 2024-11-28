@@ -21,11 +21,9 @@ public final class CommandUtils {
         return CommandPredicates.isConsole(cc.getSource());
     }
 
-
-
     public static void sendMessage(CommandContext<CommandSourceStack> commandContext, String message) {
         if (commandContext.getSource().getPlayer() instanceof ServerPlayer player) {
-			player.sendSystemMessage(Component.literal(message));
+            player.sendSystemMessage(Component.literal(message));
         } else {
             commandContext.getSource().getServer().sendSystemMessage(Component.literal(message));
         }
