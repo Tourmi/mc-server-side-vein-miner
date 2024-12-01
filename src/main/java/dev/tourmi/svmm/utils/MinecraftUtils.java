@@ -70,7 +70,6 @@ public final class MinecraftUtils {
 
         if (SVMMConfig.TELEPORT_ITEMS_TO_PLAYER.get()) {
             BLOCKS_MINED.put(blockPos, player);
-
             level.getServer().execute(() -> {
                 BLOCKS_MINED.remove(blockPos);
             });
