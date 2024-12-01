@@ -84,8 +84,7 @@ public final class Tunneler {
 
         status.lastBlocksMined = blocks.size();
         status.lastPosition = blockPos;
-
-        player.sendSystemMessage(Component.literal("Message"));
+        player.sendSystemMessage(Component.literal(String.format("Mined %d blocks", status.lastBlocksMined)));
 
         return status;
     }
