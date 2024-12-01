@@ -64,7 +64,7 @@ public final class MinecraftUtils {
 
         var blockState = level.getBlockState(blockPos);
         heldItem.mineBlock(level, blockState, blockPos, player);
-        blockState.getBlock().popExperience( level, blockPos, EnchantUtils.getExp(level, heldItem, blockPos, blockState));
+        blockState.getBlock().popExperience(level, blockPos, EnchantUtils.getExp(level, heldItem, blockPos, blockState));
         blockState.getBlock().playerDestroy(level, player, blockPos, blockState, level.getBlockEntity(blockPos), heldItem);
         level.removeBlock(blockPos, false);
 
