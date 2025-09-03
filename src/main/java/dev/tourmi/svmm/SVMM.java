@@ -4,11 +4,10 @@ import com.mojang.logging.LogUtils;
 import dev.tourmi.svmm.commands.Commands;
 import dev.tourmi.svmm.config.ClientConfigs;
 import dev.tourmi.svmm.config.SVMMConfig;
+import dev.tourmi.svmm.server.ClientStatus;
 import dev.tourmi.svmm.server.ItemTeleporter;
 import dev.tourmi.svmm.server.Tunneler;
 import dev.tourmi.svmm.server.VeinMiner;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -21,7 +20,6 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 @Mod(SVMM.MOD_ID)
@@ -37,7 +35,6 @@ public class SVMM
         veinMiner = new VeinMiner();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SVMMConfig.SPEC, "svmm-config.toml");
-
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -66,7 +63,13 @@ public class SVMM
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        // Ensures a player's config is created as they join.
         ClientConfigs.getClientConfig((event.getEntity()));
+    }
+
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        ClientStatus.getClientStatus(event.getEntity().getUUID()).reset();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

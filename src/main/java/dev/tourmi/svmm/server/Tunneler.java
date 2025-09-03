@@ -4,7 +4,6 @@ import dev.tourmi.svmm.config.ClientConfig;
 import dev.tourmi.svmm.config.ClientConfigs;
 import dev.tourmi.svmm.config.SVMMConfig;
 import dev.tourmi.svmm.config.TriggerActions;
-import dev.tourmi.svmm.utils.CommandUtils;
 import dev.tourmi.svmm.utils.MinecraftUtils;
 import dev.tourmi.svmm.utils.Utils3D;
 import net.minecraft.core.BlockPos;
@@ -30,11 +29,6 @@ public final class Tunneler {
 
     public static ClientStatus toggleTunneler(UUID playerUUID, int width, int height, int maxDepth) {
         ClientStatus status = ClientStatus.getClientStatus(playerUUID);
-        ClientConfig cfg = ClientConfigs.getClientConfig(playerUUID);
-        TriggerActions triggerAction = SVMMConfig.TRIGGER_WHEN_DEFAULT.get();
-        if (cfg != null) {
-            triggerAction = cfg.TRIGGER_WHEN.get();
-        }
 
         status.tunnelNextBlock = !status.tunnelNextBlock;
         if (!status.tunnelNextBlock) {
