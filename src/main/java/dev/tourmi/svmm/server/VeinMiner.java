@@ -1,6 +1,7 @@
 package dev.tourmi.svmm.server;
 
 import com.mojang.logging.LogUtils;
+
 import dev.tourmi.svmm.config.ClientConfig;
 import dev.tourmi.svmm.config.ClientConfigs;
 import dev.tourmi.svmm.config.SVMMConfig;
@@ -8,6 +9,8 @@ import dev.tourmi.svmm.utils.MinecraftUtils;
 import dev.tourmi.svmm.utils.Utils3D;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -25,12 +28,12 @@ public final class VeinMiner {
         if (event.getLevel().isClientSide()) return;
         if (SVMMConfig.MOD_DISABLED.get()) return;
 
-        Player player = event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
         ItemStack heldItem = player.getMainHandItem();
         BlockState blockState = event.getState();
         if (!canUseMod(player, heldItem, blockState)) return;
 
-        Level level = player.getCommandSenderWorld();
+        ServerLevel level = (ServerLevel) player.getCommandSenderWorld();
         BlockPos blockPos = event.getPos();
 
         if (canTunnel(player, blockState)) {
@@ -39,7 +42,7 @@ public final class VeinMiner {
         else if (canGiantVeinMine(player, blockState)) {
             doGiantVeinMine(player, level, heldItem, blockPos);
         }
-        else if (canVeinMine(blockState, player)) {
+        else if (canVeinMine(player, blockState)) {
             doVeinMine(player, level, heldItem, blockState, blockPos);
         } else {
             return;
@@ -55,10 +58,11 @@ public final class VeinMiner {
         if (cfg.MOD_RESTRICTED.get()) return false;
         if (player.isCreative()) return false;
         if (!cfg.TRIGGER_WHEN.get().shouldTrigger(player)) return false;
+
         return heldItem.isCorrectToolForDrops(minedBlockState);
     }
 
-    private boolean canTunnel(Player player, BlockState blockState) {
+    private boolean canTunnel(ServerPlayer player, BlockState blockState) {
         if (SVMMConfig.TUNNELING_DISABLED.get()) return false;
 
         ClientConfig cfg = ClientConfigs.getClientConfig(player);
@@ -75,7 +79,7 @@ public final class VeinMiner {
         return true;
     }
 
-    private void doTunnel(Player player, Level level, ItemStack heldItem, BlockState blockState, BlockPos blockPos) {
+    private void doTunnel(ServerPlayer player, ServerLevel level, ItemStack heldItem, BlockState blockState, BlockPos blockPos) {
         ClientStatus status = Tunneler.doTunnel(player, level, heldItem, blockState, blockPos);
 
         if (SVMMConfig.TUNNELING_LOG_USAGE.get()) {
@@ -83,7 +87,7 @@ public final class VeinMiner {
         }
     }
 
-    private boolean canVeinMine(BlockState minedBlockState, Player player) {
+    private boolean canVeinMine(ServerPlayer player, BlockState minedBlockState ) {
         ClientStatus status = ClientStatus.getClientStatus(player.getUUID());
         if (status.forceNext) {
             boolean canForceMine = !MinecraftUtils.isBlockInList(minedBlockState, SVMMConfig.FORCE_BLACKLIST.get());
@@ -105,20 +109,22 @@ public final class VeinMiner {
         return false;
     }
 
-    private void doVeinMine(Player player, Level level, ItemStack heldItem, BlockState blockState, BlockPos blockPos) {
+    private void doVeinMine(ServerPlayer player, ServerLevel level, ItemStack heldItem, BlockState blockState, BlockPos blockPos) {
         MinecraftUtils.mineBlocks(level, player, heldItem, Utils3D.getVeinBlocks(blockState, blockPos, level, SVMMConfig.MAXIMUM_BLOCKS_TO_BREAK.get()));
 
         ClientStatus status = ClientStatus.getClientStatus(player.getUUID());
         if (status.forceNext) {
             status.forceNext = false;
+
             player.sendSystemMessage(Component.literal("Force vein mine completed"));
+
             if (SVMMConfig.FORCE_LOG_USAGE.get()) {
                 LOGGER.info(player.getName().getString() + " force mined block " + MinecraftUtils.getBlockName(blockState) + " at position " + blockPos.toShortString());
             }
         }
     }
 
-    private boolean canGiantVeinMine(Player player, BlockState minedBlockState) {
+    private boolean canGiantVeinMine(ServerPlayer player, BlockState minedBlockState) {
         if (SVMMConfig.GIANT_VEIN_MINING_DISABLED.get()) return false;
 
         ClientConfig cfg = ClientConfigs.getClientConfig(player);
@@ -130,7 +136,7 @@ public final class VeinMiner {
         return canMine(minedBlockState, SVMMConfig.GIANT_VEIN_STARTER_BLOCKS.get(), SVMMConfig.GIANT_VEIN_BLACKLIST.get());
     }
 
-    private void doGiantVeinMine(Player player, Level level, ItemStack heldItem, BlockPos blockPos) {
+    private void doGiantVeinMine(ServerPlayer player, ServerLevel level, ItemStack heldItem, BlockPos blockPos) {
         MinecraftUtils.mineBlocks(level, player, heldItem, Utils3D.getGiantVeinBlocks(blockPos, level, SVMMConfig.MAXIMUM_BLOCKS_TO_BREAK.get()));
     }
 }

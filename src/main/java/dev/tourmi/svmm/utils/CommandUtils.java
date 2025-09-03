@@ -6,7 +6,7 @@ import dev.tourmi.svmm.config.ClientConfig;
 import dev.tourmi.svmm.config.ClientConfigs;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class CommandUtils {
     public static boolean isModerator(CommandContext<CommandSourceStack> cc) {
@@ -22,7 +22,7 @@ public final class CommandUtils {
     }
 
     public static void sendMessage(CommandContext<CommandSourceStack> commandContext, String message) {
-        if (commandContext.getSource().getEntity() instanceof Player player) {
+        if (commandContext.getSource().getPlayer() instanceof ServerPlayer player) {
             player.sendSystemMessage(Component.literal(message));
         } else {
             commandContext.getSource().getServer().sendSystemMessage(Component.literal(message));

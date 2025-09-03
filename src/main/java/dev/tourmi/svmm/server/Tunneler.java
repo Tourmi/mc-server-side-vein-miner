@@ -9,11 +9,11 @@ import dev.tourmi.svmm.utils.Utils3D;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-
 import java.util.Collection;
 import java.util.UUID;
 
@@ -63,7 +63,7 @@ public final class Tunneler {
         ClientStatus.getClientStatus(playerUUID).tunnelFaceMined = face;
     }
 
-    public static ClientStatus doTunnel(Player player, Level level, ItemStack heldItem, BlockState blockState, BlockPos blockPos) {
+    public static ClientStatus doTunnel(ServerPlayer player, ServerLevel level, ItemStack heldItem, BlockState blockState, BlockPos blockPos) {
         ClientStatus status = ClientStatus.getClientStatus(player.getUUID());
         status.tunnelNextBlock = false;
 
@@ -78,6 +78,7 @@ public final class Tunneler {
         status.lastBlocksMined = blocks.size();
         status.lastPosition = blockPos;
         player.sendSystemMessage(Component.literal(String.format("Mined %d blocks", status.lastBlocksMined)));
+
         return status;
     }
 
