@@ -24,7 +24,12 @@ public final class ForceCommand implements ICommand {
 
     public int defaultExecute(CommandContext<CommandSourceStack> cc) {
         if (!checkIsAllowed(cc)) return 0;
+
         Player player = cc.getSource().getPlayer();
+        if (player == null) {
+            return 0;
+        }
+
         ClientStatus status = ClientStatus.getClientStatus(player.getUUID());
         ClientConfig cfg = CommandUtils.getSourceConfig(cc);
         status.forceNext = !status.forceNext;
