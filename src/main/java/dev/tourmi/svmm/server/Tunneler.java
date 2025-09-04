@@ -29,11 +29,6 @@ public final class Tunneler {
 
     public static ClientStatus toggleTunneler(UUID playerUUID, int width, int height, int maxDepth) {
         ClientStatus status = ClientStatus.getClientStatus(playerUUID);
-        ClientConfig cfg = ClientConfigs.getClientConfig(playerUUID);
-        TriggerActions triggerAction = SVMMConfig.TRIGGER_WHEN_DEFAULT.get();
-        if (cfg != null) {
-            triggerAction = cfg.TRIGGER_WHEN.get();
-        }
 
         status.tunnelNextBlock = !status.tunnelNextBlock;
         if (!status.tunnelNextBlock) {
