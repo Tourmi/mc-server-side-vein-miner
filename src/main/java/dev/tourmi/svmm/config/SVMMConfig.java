@@ -148,7 +148,7 @@ public final class SVMMConfig {
                 .define("giant_vein_mining_disabled", false);
         GIANT_VEIN_MINING_DEFAULT_DISABLED = builder.comment("Whether or not giant vein mining is disabled by default for new players.\n" +
                         "They may enable it with /svmm enable giantVein")
-                .define("giant_vein_mining_default_disabled", false);
+                .define("giant_vein_mining_default_disabled", true);
         GIANT_VEIN_MINING_DEFAULT_RESTRICTED = builder.comment("Whether or not giant vein mining is restricted by default for new players")
                 .define("giant_vein_mining_default_restricted", false);
         GIANT_VEIN_STARTER_BLOCKS = builder.comment("The blocks the player needs to mine before the giant vein miner is triggered")
