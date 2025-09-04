@@ -9,6 +9,7 @@ import dev.tourmi.svmm.server.ClientStatus;
 import dev.tourmi.svmm.utils.CommandUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 public final class ForceCommand implements ICommand {
@@ -23,12 +24,20 @@ public final class ForceCommand implements ICommand {
 
     public int defaultExecute(CommandContext<CommandSourceStack> cc) {
         if (!checkIsAllowed(cc)) return 0;
+
         Player player = cc.getSource().getPlayer();
+        if (player == null) {
+            return 0;
+        }
+
         ClientStatus status = ClientStatus.getClientStatus(player.getUUID());
         ClientConfig cfg = CommandUtils.getSourceConfig(cc);
         status.forceNext = !status.forceNext;
         String message = status.forceNext ? cfg.TRIGGER_WHEN.get().formatConditionText("Next block mined{0} will be vein mined", " {0}") : "Cancelled vein mine";
-        player.sendSystemMessage(Component.literal(message));
+
+        ServerPlayer serverPlayer = (ServerPlayer) player; 
+        serverPlayer.sendSystemMessage(Component.literal(message));
+
         return Command.SINGLE_SUCCESS;
     }
 
