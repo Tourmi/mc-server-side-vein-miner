@@ -1,5 +1,6 @@
 package dev.tourmi.svmm.config;
 
+import dev.tourmi.svmm.utils.ModUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -30,7 +31,7 @@ public final class ClientConfigs {
         UUID playerUUID = player.getUUID();
         ClientConfig cfg = new ClientConfig(playerUUID);
         String configPath = "svmm-player-configs/" + playerUUID + ".toml";
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, cfg.SPEC, configPath);
+        ModUtils.RegisterConfig(cfg.SPEC, configPath);
         Path serverConfig = player.getServer().getWorldPath(new LevelResource("serverconfig"));
         ConfigTracker.INSTANCE.loadConfigs(ModConfig.Type.SERVER, serverConfig);
         clientConfigs.put(playerUUID, cfg);
