@@ -24,16 +24,16 @@ import java.util.List;
 public final class VeinMiner {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public void onBlockBroken(BlockEvent.BreakEvent event) {
-        if (event.getLevel().isClientSide()) return;
-        if (SVMMConfig.MOD_DISABLED.get()) return;
+    public boolean onBlockBroken(BlockEvent.BreakEvent event) {
+        if (event.getLevel().isClientSide()) return false;
+        if (SVMMConfig.MOD_DISABLED.get()) return false;
 
         ServerPlayer player = (ServerPlayer) event.getPlayer();
         ItemStack heldItem = player.getMainHandItem();
         BlockState blockState = event.getState();
-        if (!canUseMod(player, heldItem, blockState)) return;
+        if (!canUseMod(player, heldItem, blockState)) return false;
 
-        ServerLevel level = (ServerLevel) player.getCommandSenderWorld();
+        ServerLevel level = player.level();
         BlockPos blockPos = event.getPos();
 
         if (canTunnel(player, blockState)) {
@@ -45,10 +45,10 @@ public final class VeinMiner {
         else if (canVeinMine(player, blockState)) {
             doVeinMine(player, level, heldItem, blockState, blockPos);
         } else {
-            return;
+            return false;
         }
 
-        event.setCanceled(true);
+        return true;
     }
 
     private boolean canUseMod(Player player, ItemStack heldItem, BlockState minedBlockState) {
