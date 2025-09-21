@@ -23,13 +23,13 @@ import org.slf4j.Logger;
 public final class SVMM
 {
     public static final String MOD_ID = "svmm";
+
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    private final VeinMiner veinMiner;
+    private final VeinMiner veinMiner = new VeinMiner();
 
     public SVMM()
     {
-        veinMiner = new VeinMiner();
         ModUtils.RegisterMod(this);
     }
 
@@ -46,7 +46,7 @@ public final class SVMM
 
     @SubscribeEvent
     public void onBlockBroken(BlockEvent.BreakEvent event) {
-        veinMiner.onBlockBroken(event);
+        event.setCanceled(veinMiner.onBlockBroken(event));
     }
 
     @SubscribeEvent
@@ -67,7 +67,7 @@ public final class SVMM
         ClientStatus.getClientStatus(event.getEntity().getUUID()).reset();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent
     public void onItemSpawn(EntityEvent.EntityConstructing event) {
         ItemTeleporter.checkAndTeleport(event.getEntity());
     }
