@@ -13,8 +13,7 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
@@ -23,13 +22,13 @@ import org.slf4j.Logger;
 public final class SVMM
 {
     public static final String MOD_ID = "svmm";
+
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    private final VeinMiner veinMiner;
+    private final VeinMiner veinMiner = new VeinMiner();
 
     public SVMM()
     {
-        veinMiner = new VeinMiner();
         ModUtils.RegisterMod(this);
     }
 
@@ -45,8 +44,8 @@ public final class SVMM
     }
 
     @SubscribeEvent
-    public void onBlockBroken(BlockEvent.BreakEvent event) {
-        veinMiner.onBlockBroken(event);
+    public boolean onBlockBroken(BlockEvent.BreakEvent event) {
+        return veinMiner.onBlockBroken(event);
     }
 
     @SubscribeEvent
@@ -67,7 +66,7 @@ public final class SVMM
         ClientStatus.getClientStatus(event.getEntity().getUUID()).reset();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent
     public void onItemSpawn(EntityEvent.EntityConstructing event) {
         ItemTeleporter.checkAndTeleport(event.getEntity());
     }
