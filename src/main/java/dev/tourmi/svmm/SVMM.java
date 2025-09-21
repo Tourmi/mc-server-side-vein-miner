@@ -3,12 +3,11 @@ package dev.tourmi.svmm;
 import com.mojang.logging.LogUtils;
 import dev.tourmi.svmm.commands.Commands;
 import dev.tourmi.svmm.config.ClientConfigs;
-import dev.tourmi.svmm.config.SVMMConfig;
 import dev.tourmi.svmm.server.ClientStatus;
 import dev.tourmi.svmm.server.ItemTeleporter;
 import dev.tourmi.svmm.server.Tunneler;
 import dev.tourmi.svmm.server.VeinMiner;
-import net.minecraftforge.common.MinecraftForge;
+import dev.tourmi.svmm.utils.ModUtils;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -16,14 +15,12 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.fml.config.ModConfig;
 import org.slf4j.Logger;
 
 @Mod(SVMM.MOD_ID)
-public class SVMM
+public final class SVMM
 {
     public static final String MOD_ID = "svmm";
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -33,9 +30,7 @@ public class SVMM
     public SVMM()
     {
         veinMiner = new VeinMiner();
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SVMMConfig.SPEC, "svmm-config.toml");
-        MinecraftForge.EVENT_BUS.register(this);
+        ModUtils.RegisterMod(this);
     }
 
     @SubscribeEvent
