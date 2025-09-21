@@ -9,11 +9,12 @@ import net.minecraft.world.entity.player.Player;
 
 public final class ItemTeleporter {
     public static void checkAndTeleport(Entity entity) {
-        if (entity.getCommandSenderWorld().isClientSide) return;
+        var server = entity.getServer();
+        if (server == null) return;
         if (!SVMMConfig.TELEPORT_ITEMS_TO_PLAYER.get()) return;
         if (!(entity instanceof ItemEntity item)) return;
 
-        entity.getServer().execute(() -> {
+        server.execute(() -> {
             if (!item.isAlive()) return;
 
             BlockPos pos = new BlockPos(item.getBlockX(), item.getBlockY(), item.getBlockZ());
