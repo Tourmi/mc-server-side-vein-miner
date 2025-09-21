@@ -23,9 +23,11 @@ Steps to reproduce the behavior:
 ## Screenshots
 *If applicable, add screenshots to help explain your problem.*
 
-## Versions
-| Component         | Version |
-| ----------------: | :------ |
-| Minecraft version | x.y.z   |
-| Forge version     | x.y.z   |
-| Mod version       | x.y.z.w | 
+## Version
+*Fill out the minecraft, forge, and mod version in the table below*
+
+|                      Component | Version |
+|-------------------------------:|:--------|
+|              Minecraft version | x.y.z   |
+|                  Forge version | x.y.z   |
+| Server-side Vein Miner version | x.y.z.w |
